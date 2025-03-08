@@ -25,13 +25,7 @@ using namespace std;
 #include "math.h"
 
 #define STREQL(x, y) (strcmp(x, y) == 0)
-#define MAX(x, y) ((x) > (y) ? (x) : (y))
-#define ROUND(x) ((int) ((x) + 0.5))
 
-// 4311 is type cast ponter to long warning
-// 4996 is warning against strcpy
-// 4267 is size_t to long warning
-#pragma warning(disable: 4311 4996 4267)
 Alg_atoms symbol_table;
 Serial_read_buffer Alg_track::ser_read_buf; // declare the static variables
 Serial_write_buffer Alg_track::ser_write_buf; 
@@ -125,7 +119,7 @@ void Alg_parameter::show()
         printf("%s:%s", attr_name(), s);
         break;
     case 'i':
-        printf("%s:%lld", attr_name(), i);
+        printf("%s:%ld", attr_name(), i);
         break;
     case 'l':
         printf("%s:%s", attr_name(), (l ? "t" : "f"));
@@ -1577,10 +1571,9 @@ Alg_track *Alg_track::unserialize(void *buffer, int len)
 {
     assert(len > 8);
     ser_read_buf.init_for_read(buffer, len);
-    bool alg = ser_read_buf.get_char() == 'A' &&
-               ser_read_buf.get_char() == 'L' &&
-               ser_read_buf.get_char() == 'G';
-    assert(alg);
+    assert(ser_read_buf.get_char() == 'A' &&
+           ser_read_buf.get_char() == 'L' &&
+           ser_read_buf.get_char() == 'G');
     char c = ser_read_buf.get_char();
     if (c == 'S') {
         Alg_seq *seq = new Alg_seq;
@@ -1597,21 +1590,17 @@ Alg_track *Alg_track::unserialize(void *buffer, int len)
 }
 
 
-#pragma warning(disable: 4800) // long to bool performance warning
-
 /* Note: this Alg_seq must have a default initialized Alg_time_map.
  * It will be filled in with data from the ser_read_buf buffer.
  */
 void Alg_seq::unserialize_seq()
 {
     ser_read_buf.check_input_buffer(48);
-    bool algs = (ser_read_buf.get_char() == 'A') &&
-                (ser_read_buf.get_char() == 'L') &&
-                (ser_read_buf.get_char() == 'G') &&
-                (ser_read_buf.get_char() == 'S');
-    assert(algs);
-    int len = ser_read_buf.get_int32();
-    assert(ser_read_buf.get_len() >= len);
+    assert(ser_read_buf.get_char() == 'A' &&
+           ser_read_buf.get_char() == 'L' &&
+           ser_read_buf.get_char() == 'G' &&
+           ser_read_buf.get_char() == 'S');
+    assert(ser_read_buf.get_len() >= ser_read_buf.get_int32());
     channel_offset_per_track = ser_read_buf.get_int32();
     units_are_seconds = ser_read_buf.get_int32() != 0;
     beat_dur = ser_read_buf.get_double();
@@ -1653,14 +1642,15 @@ void Alg_seq::unserialize_seq()
 void Alg_track::unserialize_track()
 {
     ser_read_buf.check_input_buffer(32);
-    bool algt = (ser_read_buf.get_char() == 'A') &&
-                (ser_read_buf.get_char() == 'L') &&
-                (ser_read_buf.get_char() == 'G') &&
-                (ser_read_buf.get_char() == 'T');
+    assert(ser_read_buf.get_char() == 'A' &&
+           ser_read_buf.get_char() == 'L' &&
+           ser_read_buf.get_char() == 'G' &&
+           ser_read_buf.get_char() == 'T');
     assert(algt);
     int offset = ser_read_buf.get_posn(); // stored length does not include 'ALGT'
     int bytes = ser_read_buf.get_int32();
     assert(bytes <= ser_read_buf.get_len() - offset);
+    (void)offset; (void)bytes;
     units_are_seconds = (bool) ser_read_buf.get_int32();
     int event_count = ser_read_buf.get_int32();
     beat_dur = ser_read_buf.get_double();
@@ -1730,7 +1720,6 @@ void Alg_track::unserialize_parameter(Alg_parameter_ptr parm_ptr)
     }
 }
 
-#pragma warning(default: 4800)
 
 void Alg_track::set_time_map(Alg_time_map *map)
 {
@@ -2157,7 +2146,7 @@ void Alg_time_sigs::cut(double start, double end, double dur)
         // due to another time signature, in which case we do not
         // need to insert anything.
         double measures = end / 4.0;
-        double imeasures = ROUND(measures);
+        double imeasures = round(measures);
         if (!within(measures, imeasures, ALG_EPS)) {
             // start is not on a barline, maybe add one here:
             double bar_loc = (int(measures) + 1) * 4.0;
@@ -2177,7 +2166,7 @@ void Alg_time_sigs::cut(double start, double end, double dur)
         Alg_time_sig &tsp = time_sigs[i - 1];
         double beats_per_measure = (tsp.num * 4) / tsp.den;
         double measures = (end - tsp.beat) / beats_per_measure;
-        int imeasures = ROUND(measures);
+        long imeasures = roundl(measures);
         if (!within(measures, imeasures, ALG_EPS)) {
             // end is not on a measure, so we need to insert a time sig
             // to force a bar line at the first measure location after
@@ -2297,7 +2286,7 @@ void Alg_time_sigs::trim(double start, double end)
         // due to another time signature, in which case we do not
         // need to insert anything.
         double measures = start / 4.0;
-        double imeasures = ROUND(measures);
+        double imeasures = round(measures);
         if (!within(measures, imeasures, ALG_EPS)) {
             // start is not on a barline, maybe add one here:
             double bar_loc = (int(measures) + 1) * 4.0;
@@ -2316,7 +2305,7 @@ void Alg_time_sigs::trim(double start, double end)
         Alg_time_sig &tsp = time_sigs[i];
         double beats_per_measure = (tsp.num * 4) / tsp.den;
         double measures = (start - tsp.beat) / beats_per_measure;
-        int imeasures = ROUND(measures);
+        long imeasures = roundl(measures);
         if (!within(measures, imeasures, ALG_EPS)) {
             // beat is not on a measure, so we need to insert a time sig
             // to force a bar line at the first measure location after
@@ -2508,7 +2497,7 @@ void Alg_time_sigs::paste(double start, Alg_seq *seq)
     // if diff_in_measures is not (approximately) integer, we need to
     // force a barline (time signature) after start + dur to maintain
     // the relationship between barliness and notes
-    if (!within(diff_in_measures, ROUND(diff_in_measures), ALG_EPS)) {
+    if (!within(diff_in_measures, round(diff_in_measures), ALG_EPS)) {
         // recall that old_bar_loc is shifted by dur
         insert(old_bar_loc, num_after_splice, den_after_splice);
     }
@@ -2561,7 +2550,7 @@ void Alg_time_sigs::insert_beats(double start, double dur)
     // insert a time signature to maintain bar positions if necessary
     double beats_per_measure = (tsnum * 4) / tsden;
     double measures = dur / beats_per_measure; // shift distance
-    int imeasures = ROUND(measures);
+    long imeasures = roundl(measures);
     if (!within(measures, imeasures, ALG_EPS)) {
         // shift is not a whole number of measures, so we may need to insert
         // time signature after silence
@@ -2589,13 +2578,13 @@ double Alg_time_sigs::nearest_beat(double beat)
     // i is where we would insert time signature at beat
     // case 1: there is no time signature
     if (i == 0 && len == 0) {
-        return ROUND(beat);
+        return round(beat);
     // case 2: beat falls approximately on time signature
     } else if (i < len && within(time_sigs[i].beat, beat, ALG_EPS)) {
         return time_sigs[i].beat;
     // case 3: beat is after no time signature and before one
     } else if (i == 0) {
-        double trial_beat = ROUND(beat);
+        double trial_beat = round(beat);
         // it is possible that we rounded up past a time signature
         if (trial_beat > time_sigs[0].beat - ALG_EPS) {
             return time_sigs[0].beat;
@@ -2604,7 +2593,7 @@ double Alg_time_sigs::nearest_beat(double beat)
     }
     // case 4: beat is after some time signature
     double trial_beat = time_sigs[i - 1].beat + 
-                        ROUND(beat - time_sigs[i - 1].beat);
+                        round(beat - time_sigs[i - 1].beat);
     // rounding may advance trial_beat past next time signature:
     if (i < len && trial_beat > time_sigs[i].beat - ALG_EPS) {
         return time_sigs[i].beat;
@@ -2922,7 +2911,6 @@ Alg_track_ptr Alg_seq::track(int i)
     return &(track_list[i]);
 }
 
-#pragma warning(disable: 4715) // ok not to return a value here
 
 Alg_event_ptr &Alg_seq::operator[](int i) 
 {
@@ -2939,7 +2927,6 @@ Alg_event_ptr &Alg_seq::operator[](int i)
     }
     assert(false); // out of bounds
 }
-#pragma warning(default: 4715)
 
 
 void Alg_seq::convert_to_beats()
@@ -3027,7 +3014,7 @@ Alg_seq_ptr Alg_seq::cut(double start, double len, bool all)
         result->track_list.append(cut_track);
         // initially, result->last_note_off is zero. We want to know the
         // maximum over all cut_tracks, so compute that here:
-        result->last_note_off = MAX(result->last_note_off, 
+        result->last_note_off = fmaxl(result->last_note_off, 
                                     cut_track->last_note_off);
         // since we're moving to a new sequence, change the track's time_map
         result->track_list[i].set_time_map(map);
@@ -3131,7 +3118,7 @@ Alg_seq *Alg_seq::copy(double start, double len, bool all)
     for (int i = 0; i < tracks(); i++) {
         Alg_track_ptr copy = copy_track(i, start, len, all);
         result->track_list.append(copy);
-        result->last_note_off = MAX(result->last_note_off, 
+        result->last_note_off = fmaxl(result->last_note_off, 
                                     copy->last_note_off);
         // since we're copying to a new seq, change the track's time_map
         result->track_list[i].set_time_map(map);
