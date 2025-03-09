@@ -16,6 +16,7 @@
 #include "memory.h"
 #include <iostream>
 #include <fstream>
+#define __STDC_FORMAT_MACROS 1
 #include <inttypes.h>
 using namespace std;
 #include "allegro.h"
