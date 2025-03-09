@@ -16,7 +16,7 @@
 #include "memory.h"
 #include <iostream>
 #include <fstream>
-#define __STDC_FORMAT_MACROS 1
+#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 using namespace std;
 #include "allegro.h"
@@ -120,7 +120,7 @@ void Alg_parameter::show()
         printf("%s:%s", attr_name(), s);
         break;
     case 'i':
-        printf("%s:" PRId64, attr_name(), i);
+        printf("%s:"PRId64, attr_name(), i);
         break;
     case 'l':
         printf("%s:%s", attr_name(), (l ? "t" : "f"));
@@ -2928,7 +2928,7 @@ Alg_event_ptr &Alg_seq::operator[](int i)
     }
     assert(false); // out of bounds
     // If C++23 ever becomes an option, prefer std::unreachable()
-#ifdef WIN32
+#ifdef _MSC_VER
     __assume(0);
 #elif defined(__GNUC__)
     __builtin_unreachable();

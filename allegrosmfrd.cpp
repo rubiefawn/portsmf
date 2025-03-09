@@ -373,7 +373,7 @@ void Alg_midifile_reader::Mf_timesig(int i1, int i2, int i3, int i4)
 
 void Alg_midifile_reader::Mf_tempo(int tempo)
 {
-    double beat = get_currtime();
+    double beat = (double)get_currtime();
     beat = beat / divisions; // convert to quarters
     // 6000000 us/min / n us/beat => beat / min
     double bpm = 60000000.0 / tempo;
