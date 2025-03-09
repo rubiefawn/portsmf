@@ -119,7 +119,7 @@ void Alg_parameter::show()
         printf("%s:%s", attr_name(), s);
         break;
     case 'i':
-        printf("%s:%ld", attr_name(), i);
+        printf("%s:" PRId64, attr_name(), i);
         break;
     case 'l':
         printf("%s:%s", attr_name(), (l ? "t" : "f"));
@@ -230,7 +230,7 @@ int Alg_event::get_type_code()
         const char* attr = get_attribute();
         if (STREQL(attr, "gater"))         // volume change
             return ALG_GATE;
-        if (STREQL(attr, "bendr"))         // pitch bend     
+        if (STREQL(attr, "bendr"))         // pitch bend
             return ALG_BEND;
         if (strncmp(attr, "control", 7) == 0)      // control change
             // note that midi control changes have attributes of the form
@@ -243,7 +243,7 @@ int Alg_event::get_type_code()
             return ALG_PROGRAM;
         if (STREQL(attr, "pressurer"))    // pressure change
             return ALG_PRESSURE;
-        if (STREQL(attr, "keysigi"))       // key signature  
+        if (STREQL(attr, "keysigi"))       // key signature
             return ALG_KEYSIG;
         if (STREQL(attr, "timesig_numi"))  // time signature numerator
             return ALG_TIMESIG_NUM;
@@ -2166,7 +2166,7 @@ void Alg_time_sigs::cut(double start, double end, double dur)
         Alg_time_sig &tsp = time_sigs[i - 1];
         double beats_per_measure = (tsp.num * 4) / tsp.den;
         double measures = (end - tsp.beat) / beats_per_measure;
-        long imeasures = roundl(measures);
+        long imeasures = (long)roundl(measures);
         if (!within(measures, imeasures, ALG_EPS)) {
             // end is not on a measure, so we need to insert a time sig
             // to force a bar line at the first measure location after
@@ -2410,7 +2410,7 @@ void Alg_time_sigs::paste(double start, Alg_seq *seq)
         if (i > 0) { // time signature before start is at i - 1
             num_before_splice = time_sigs[i-1].num;
             den_before_splice = time_sigs[i-1].den;
-        }          
+        }
     }
     // i is where insert will go, time_sig[i].beat >= start
     // begin by adding duration to time_sig's at i and above
@@ -2428,14 +2428,14 @@ void Alg_time_sigs::paste(double start, Alg_seq *seq)
     double num_of_insert = 4.0;
     double den_of_insert = 4.0;
     double beat_of_insert = 0.0;
-    int first_from_index = 0; // where to start copying from
+    // int first_from_index = 0; // where to start copying from
     if (from.length() > 0 && from[0].beat < ALG_EPS) {
         // there is an initial time signature in "from"
         num_of_insert = from[0].num;
         den_of_insert = from[0].den;
         // since we are handling the first time signature in from,
         // we can start copying at index == 1:
-        first_from_index = 1;
+        // first_from_index = 1;
     }
     // compare time signatures to see if we need a change at start:
     if (num_before_splice != num_of_insert ||
@@ -2550,7 +2550,7 @@ void Alg_time_sigs::insert_beats(double start, double dur)
     // insert a time signature to maintain bar positions if necessary
     double beats_per_measure = (tsnum * 4) / tsden;
     double measures = dur / beats_per_measure; // shift distance
-    long imeasures = roundl(measures);
+    long imeasures = (long)roundl(measures);
     if (!within(measures, imeasures, ALG_EPS)) {
         // shift is not a whole number of measures, so we may need to insert
         // time signature after silence
@@ -2926,6 +2926,12 @@ Alg_event_ptr &Alg_seq::operator[](int i)
         tr++;
     }
     assert(false); // out of bounds
+    // If C++23 ever becomes an option, prefer std::unreachable()
+#ifdef WIN32
+    __assume(0);
+#elif defined(__GNUC__)
+    __builtin_unreachable();
+#endif
 }
 
 
