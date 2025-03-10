@@ -52,9 +52,8 @@
 #include <iostream>
 #include <cstring>
 #include <cstdint>
+#include "common.h"
 
-typedef int64_t int64;
-typedef int32_t int32;
 
 #define ALG_EPS 0.000001 // epsilon
 #define ALG_DEFAULT_BPM 100.0 // default tempo
@@ -126,7 +125,7 @@ public:
     union {
         double r;// real
         const char *s; // string
-        int64 i;  // integer
+        int64_t i;  // integer
         bool l;  // logical
         const char *a; // symbol (atom)
     }; // anonymous union
@@ -166,7 +165,7 @@ public:
     // insert string will copy string to heap
     static void insert_string(Alg_parameters **list, const char *name, 
                               const char *s);
-    static void insert_int64(Alg_parameters **list, const char *name, int64 i);
+    static void insert_int64(Alg_parameters **list, const char *name, int64_t i);
     static void insert_logical(Alg_parameters **list, const char *name, bool l);
     static void insert_atom(Alg_parameters **list, const char *name, 
                             const char *s);
@@ -227,7 +226,7 @@ public:
     void set_string_value(const char *attr, const char *value);
     void set_real_value(const char *attr, double value);
     void set_logical_value(const char *attr, bool value);
-    void set_int64_value(const char *attr, int64 value);
+    void set_int64_value(const char *attr, int64_t value);
     void set_atom_value(const char *attr, const char *atom);
 
     // Some note methods. These fail (via assert()) if this is not a note:
@@ -251,7 +250,7 @@ public:
     bool has_attribute(const char *attr);      // test if note has attribute/value pair
     char get_attribute_type(const char *attr); // get the associated type: 
         // 's' = string, 
-        // 'r' = real (double), 'l' = logical (bool), 'i' = integer (int64),
+        // 'r' = real (double), 'l' = logical (bool), 'i' = integer (int64_t),
         // 'a' = atom (char *), a unique string stored in Alg_seq
     // get the string value
     const char *get_string_value(const char *attr, const char *value = nullptr);
@@ -260,7 +259,7 @@ public:
     // get the logical value
     bool get_logical_value(const char *attr, bool value = false);
     // get the integer value
-    int64 get_int64_value(const char *attr, int64 value = 0);
+    int64_t get_int64_value(const char *attr, int64_t value = 0);
     // get the atom value
     const char *get_atom_value(const char *attr, const char *value = nullptr);
     void delete_attribute(const char *attr);   // delete an attribute/value pair
@@ -272,14 +271,14 @@ public:
     // 
     const char *get_attribute();    // get the update's attribute (string)
     char get_update_type();   // get the update's type: 's' = string, 
-        // 'r' = real (double), 'l' = logical (bool), 'i' = integer (int64),
+        // 'r' = real (double), 'l' = logical (bool), 'i' = integer (int64_t),
         // 'a' = atom (char *), a unique string stored in Alg_seq
     const char *get_string_value(); // get the update's string value
         // Notes: Caller does not own the return value. Do not modify.
         // Do not use after underlying Alg_seq is modified.
     double get_real_value();  // get the update's real value
     bool get_logical_value(); // get the update's logical value
-    int64 get_int64_value(); // get the update's integer value
+    int64_t get_int64_value(); // get the update's integer value
     const char *get_atom_value();   // get the update's atom value
         // Notes: Caller does not own the return value. Do not modify.
         // The return value's lifetime is forever.
@@ -566,9 +565,9 @@ public:
     }
     char get_char() { return *ptr++; }
     void unget_chars(int n) { ptr -= n; } // undo n get_char() calls
-    int get_int32() { int i = *((int32 *) ptr); ptr += 4; return i; }
-    int64 get_int64() { assert(!(((intptr_t) ptr) & 7));
-                        int64 i = *((int64 *) ptr); ptr += 8; return i; }
+    int get_int32() { int i = *((int32_t *) ptr); ptr += 4; return i; }
+    int64_t get_int64() { assert(!(((intptr_t) ptr) & 7));
+                        int64_t i = *((int64_t *) ptr); ptr += 8; return i; }
     float get_float() { float f = *((float *) ptr); ptr += 4; return f; }
     double get_double() { assert(!(((intptr_t) ptr) & 7));
                           double d = *((double *) ptr); ptr += sizeof(double); 
@@ -606,8 +605,8 @@ typedef class Serial_write_buffer: public Serial_buffer {
     // store_int32 writes an int32 at a given offset
     void store_int32(int offset, int value) {
         assert(offset <= get_posn() - 4);
-        int32 *loc = (int32 *) (buffer + offset);
-        *loc = (int32) value;
+        int32_t *loc = (int32_t *) (buffer + offset);
+        *loc = (int32_t) value;
     }
     bool check_buffer(int needed);
     void set_string(const char *s) { 
@@ -627,15 +626,15 @@ typedef class Serial_write_buffer: public Serial_buffer {
 #endif
         pad();
     }
-    void set_int32(int v) { *((int32 *) ptr) = (int32) v; ptr += 4; }
-    void set_int64(int64 v) { assert(!(((intptr_t) ptr) & 7));
-                              *((int64 *) ptr) = (int64) v; ptr += 8; }
+    void set_int32(int v) { *((int32_t *) ptr) = (int32_t) v; ptr += 4; }
+    void set_int64(int64_t v) { assert(!(((intptr_t) ptr) & 7));
+                              *((int64_t *) ptr) = (int64_t) v; ptr += 8; }
     void set_double(double v) { assert(!(((intptr_t) ptr) & 7));
                                 *((double *) ptr) = v; ptr += 8; }
     void set_float(float v) { *((float *) ptr) = v; ptr += 4; }
     void set_char(char v) { *ptr++ = v; }
     void pad() { while (((intptr_t) ptr) & 7) set_char(0); }
-    void *to_heap(int32 *len) {
+    void *to_heap(int32_t *len) {
         *len = get_posn();
         char *newbuf = new char[*len];
         memcpy(newbuf, buffer, *len);
@@ -1111,7 +1110,7 @@ public:
     // add_event takes a pointer to an event on the heap. The event is not
     // copied, and this Alg_seq becomes the owner and freer of the event.
     void add_event(Alg_event_ptr event, int track_num);
-    void add(Alg_event_ptr event) { assert(false); } // call add_event instead
+    void add(Alg_event_ptr event) { UNREACHABLE; } // call add_event instead
     // get the tempo starting at beat
     double get_tempo(double beat);
     bool set_tempo(double bpm, double start_beat, double end_beat);

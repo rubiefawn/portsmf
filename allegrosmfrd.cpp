@@ -57,7 +57,7 @@ public:
 
     void set_nomerge(bool flag) { Mf_nomerge = flag; }
     void set_skipinit(bool flag) { Mf_skipinit = flag; }
-    int64 get_currtime() { return Mf_currtime; }
+    int64_t get_currtime() { return Mf_currtime; }
 
 protected:
     int meta_channel; // the channel for meta events, set by MIDI chan prefix

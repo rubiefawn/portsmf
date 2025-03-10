@@ -36,7 +36,7 @@ public:
                                           double time);
     bool parse();
     int parse_chan(string &field);
-    int64 parse_int(string &field);
+    int64_t parse_int(string &field);
     int find_real_in(string &field, int n);
     double parse_real(string &field);
     void parse_error(string &field, int offset, const char *message);
@@ -487,7 +487,7 @@ int Alg_reader::parse_chan(string &field)
 }
 
 
-int64 Alg_reader::parse_int(string &field)
+int64_t Alg_reader::parse_int(string &field)
 {
     const char *int_string = field.c_str() + 1;
     const char *msg = "Integer expected";
