@@ -149,7 +149,7 @@ public:
         next = list;
     }
 
-    //~Alg_parameters() { }
+    //~Alg_parameters() = default;
 
     // each of these routines takes address of pointer to the list
     // insertion is performed without checking whether or not a
@@ -289,7 +289,7 @@ public:
     const char *GetDescription(); // computes a text description of this event
     // the result is in a static buffer, not thread-safe, just for debugging.
     Alg_event() { selected = false; }
-    virtual ~Alg_event() {}
+    virtual ~Alg_event() = default;
 } *Alg_event_ptr;
 
 
@@ -308,7 +308,7 @@ public:
 
 typedef class Alg_update : public Alg_event {
 public:
-    virtual ~Alg_update() {};
+    virtual ~Alg_update() = default;
     Alg_update(Alg_update *); // copy constructor
     Alg_parameter parameter; // an update contains one attr/value pair
 
@@ -439,7 +439,7 @@ typedef class Alg_beat {
 public:
     Alg_beat(double t, double b) {
         time = t; beat = b; }
-    Alg_beat() {};
+    Alg_beat() = default;
     double time;
     double beat;
 } *Alg_beat_ptr;
@@ -539,7 +539,7 @@ class Serial_buffer {
         len = 0;
         overflow_flag = false;
     }
-    virtual ~Serial_buffer() { }
+    virtual ~Serial_buffer() = default;
     bool overflow() { return overflow_flag; }
     int get_posn() { return (int) (ptr - buffer); }
     int get_len() { return len; }
@@ -552,7 +552,7 @@ public:
     // setting buffer, but it is not the Serial_read_buffer's responsibility
     // to delete the buffer (owner might want to reuse it), so the destructor
     // does nothing.
-    virtual ~Serial_read_buffer() {  }
+    virtual ~Serial_read_buffer() = default;
     void get_pad() { while (((intptr_t) ptr) & 7) ptr++; }
     // Prepare to read n bytes from buf. The caller must manage buf: it is
     // valid until reading is finished, and it is caller's responsibility
