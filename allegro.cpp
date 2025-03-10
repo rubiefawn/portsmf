@@ -164,7 +164,7 @@ void Alg_parameters::insert_string(Alg_parameters **list, const char *name,
 
 
 void Alg_parameters::insert_int64(Alg_parameters **list, const char *name, 
-                                    int64 i)
+                                    int64_t i)
 {
     Alg_parameters_ptr a = new Alg_parameters(*list);
     *list = a;
@@ -316,7 +316,7 @@ void Alg_event::set_logical_value(const char *a, bool value)
 }
 
 
-void Alg_event::set_int64_value(const char *a, int64 value)
+void Alg_event::set_int64_value(const char *a, int64_t value)
 {
     assert(a); // must be non-null
     Alg_attribute attr = symbol_table.insert_string(a);
@@ -463,7 +463,7 @@ bool Alg_event::get_logical_value(const char *a, bool value)
 }
 
 
-int64 Alg_event::get_int64_value(const char *a, int64 value)
+int64_t Alg_event::get_int64_value(const char *a, int64_t value)
 {	
     assert(is_note());
     assert(a);
@@ -544,7 +544,7 @@ bool Alg_event::get_logical_value()
 }
 
 
-int64 Alg_event::get_int64_value()
+int64_t Alg_event::get_int64_value()
 {
     assert(is_update());
     Alg_update* update = (Alg_update *) this;
@@ -1285,7 +1285,7 @@ Alg_track::Alg_track(Alg_event_list_ref event_list, Alg_time_map_ptr map,
 }
 
 
-void Alg_track::serialize(void **buffer, int32 *bytes)
+void Alg_track::serialize(void **buffer, int32_t *bytes)
 {
     // first determine whether this is a seq or a track.
     // if it is a seq, then we will write the time map and a set of tracks
@@ -1296,53 +1296,53 @@ void Alg_track::serialize(void **buffer, int32 *bytes)
     //
     // The format for a seq is:
     //   'ALGS' -- indicates that this is a sequence
-    //   int32 length of all seq data in bytes starting with 'ALGS'
-    //   int32 channel_offset_per_track
-    //   int32 units_are_seconds
+    //   int32_t length of all seq data in bytes starting with 'ALGS'
+    //   int32_t channel_offset_per_track
+    //   int32_t units_are_seconds
     //   double beat_dur
     //   double real_dur
     //   time_map:
     //      double last_tempo
-    //      int32 last_tempo_flag
-    //      int32 len -- number of tempo changes
+    //      int32_t last_tempo_flag
+    //      int32_t len -- number of tempo changes
     //      for each tempo change (Alg_beat):
     //         double time
     //         double beat
     //   time_sigs:
-    //      int32 len -- number of time_sigs
-    //      int32 pad
+    //      int32_t len -- number of time_sigs
+    //      int32_t pad
     //      for each time signature:
     //         double beat
     //         double num
     //         double den
     //   tracks:
-    //      int32 len -- number of tracks
-    //      int32 pad
+    //      int32_t len -- number of tracks
+    //      int32_t pad
     //      for each track:
     //         'ALGT' -- indicates this is a track
-    //         int32 length of all track data in bytes starting with 'ALGT'
-    //         int32 units_are_seconds
-    //         int32 len -- number of events
+    //         int32_t length of all track data in bytes starting with 'ALGT'
+    //         int32_t units_are_seconds
+    //         int32_t len -- number of events
     //         double beat_dur
     //         double real_dur
     //         for each event:
-    //            int32 selected
-    //            int32 type
-    //            int32 key
-    //            int32 channel
+    //            int32_t selected
+    //            int32_t type
+    //            int32_t key
+    //            int32_t channel
     //            double time
     //            if this is a note:
     //               float pitch
     //               float loud
     //               double dur
-    //               int32 len -- number of parameters
+    //               int32_t len -- number of parameters
     //               for each parameter:
     //                  char attribute[] with zero pad to ALIGN
     //                  one of the following, depending on type:
     //                     double r
     //                     char s[] terminated by zero
-    //                     int64 i
-    //                     int32 l
+    //                     int64_t i
+    //                     int32_t l
     //                     char a[] terminated by zero
     //               zero pad to 8-byte boundary
     //            else if this is an update
@@ -1357,7 +1357,7 @@ void Alg_track::serialize(void **buffer, int32 *bytes)
 }
 
 
-void Alg_seq::serialize(void **buffer, int32 *bytes)
+void Alg_seq::serialize(void **buffer, int32_t *bytes)
 {	
     assert(get_type() == 's');
     ser_write_buf.init_for_write();
@@ -1374,11 +1374,11 @@ bool Serial_write_buffer::check_buffer(int needed)
     if (overflow()) {  // once we throw out data, we cannot reallocate space
         return true;
     }
-    // overall length count is written into header as int32, so maximum
-    // for new_len is 0x7FFFFFFF. We can switch to int64 computation to
+    // overall length count is written into header as int32_t, so maximum
+    // for new_len is 0x7FFFFFFF. We can switch to int64_t computation to
     // avoid overflow:
-    if (len < ((int64) (ptr - buffer)) + needed) { // do we need more space?
-        int64 new_len = len * 2; // exponential growth is important
+    if (len < ((int64_t) (ptr - buffer)) + needed) { // do we need more space?
+        int64_t new_len = len * 2; // exponential growth is important
         // initially, length is zero, so bump new_len to a starting value
         if (new_len == 0) new_len = 1024;
         // after enough doublings from 1024, we double 2^30 to get 2^31,

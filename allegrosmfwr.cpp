@@ -37,10 +37,10 @@ public:
     void write(ostream &file /* , midiFileFormat = 1 */);
 
 private:
-    int64 previous_divs; // time in ticks of most recently written event
+    int64_t previous_divs; // time in ticks of most recently written event
 
     void write_track(int i);
-    void write_tempo(int64 divs, int tempo);
+    void write_tempo(int64_t divs, int tempo);
     void write_tempo_change(int i);
     void write_time_signature(int i);
     void write_note(Alg_note_ptr note, bool on);
@@ -478,7 +478,7 @@ void Alg_smf_write::write_track(int i)
 }
 
 
-void Alg_smf_write::write_tempo(int64 divs, int tempo)
+void Alg_smf_write::write_tempo(int64_t divs, int tempo)
 {
     //    printf("Inserting tempo %f after %f clocks.\n", tempo, delta);
     write_varinum((int) (divs - previous_divs));
@@ -496,7 +496,7 @@ void Alg_smf_write::write_tempo_change(int i)
     // extract tempo map
     Alg_beats &b = seq->get_time_map()->beats;
     double tempo;
-    int64 divs;
+    int64_t divs;
     if (i < seq->get_time_map()->beats.len - 1) {
         tempo = 1000000 * ((b[i+1].time - b[i].time) / 
                            (b[i+1].beat - b[i].beat));
@@ -534,9 +534,9 @@ void Alg_smf_write::write_time_signature(int i)
 
 void Alg_smf_write::write(ostream &file)
 {
-    int64 track_len_offset;
-    int64 track_end_offset;
-    int64 track_len;
+    int64_t track_len_offset;
+    int64_t track_end_offset;
+    int64_t track_len;
 
     out_file = &file;
 
@@ -603,8 +603,8 @@ void Alg_smf_write::write_32bit(int num)
 void Alg_smf_write::write_delta(double event_time)
 {
     // divisions is ideal absolute time in divisions
-    int64 divisions = ROUND(division * event_time);
-    int64 delta_divs = divisions - previous_divs;
+    int64_t divisions = ROUND(division * event_time);
+    int64_t delta_divs = divisions - previous_divs;
     write_varinum((int) delta_divs);
     previous_divs = divisions;    
 }
