@@ -759,9 +759,7 @@ bool Alg_reader::parse_val(Alg_parameter_ptr param, string &s, int i)
     } else if (isdigit(s[i]) || s[i] == '-' || s[i] == '.') {
         int pos = i;
         bool period = false;
-        int sign = 1;
         if (s[pos] == '-') {
-            sign = -1;
             pos++;
         }
         while (pos < len) {
