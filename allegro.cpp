@@ -763,7 +763,7 @@ void Alg_event_list::set_start_time(Alg_event *event, double t)
             }
         }
     }
-    assert(false); // event not found seq or track!
+    UNREACHABLE; // event not found seq or track!
   found_event:
     // at this point, track[index] == event
     // we could be clever and figure out exactly what notes to move
@@ -2897,7 +2897,7 @@ void Alg_seq::seq_from_track(Alg_track_ref tr)
             to_track->append(event);
         }
     } else {
-        assert(false); // expected track or sequence
+        UNREACHABLE; // expected track or sequence
     }
 }
 
