@@ -1,4 +1,5 @@
 #include <cinttypes>
+typedef int32_t int32;
 
 #define NOTEOFF 0x80
 #define NOTEON 0x90
@@ -84,7 +85,7 @@ private:
     int msgleng();
 
     int readmt(const char*,int);
-    int32_t to32bit(int,int,int,int);
+    int32 to32bit(int,int,int,int);
     int to16bit(int,int);
     void mferror(const char *);
     void badbyte(int);

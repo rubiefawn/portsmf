@@ -376,9 +376,9 @@ long Midifile_reader::readvarinum()
     return (value);
 }
 
-int32_t Midifile_reader::to32bit(int c1, int c2, int c3, int c4)
+int32 Midifile_reader::to32bit(int c1, int c2, int c3, int c4)
 {
-    int32_t value = 0L;
+    int32 value = 0L;
 
     value = (c1 & 0xff);
     value = (value<<8) + (c2 & 0xff);
