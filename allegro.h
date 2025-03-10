@@ -48,10 +48,10 @@
 
 #ifndef ALLEGRO_H
 #define ALLEGRO_H
-#include <assert.h>
+#include <cassert>
 #include <istream>
 #include <ostream>
-#include <stdint.h>
+#include <cstdint>
 
 typedef int64_t int64;
 typedef int32_t int32;

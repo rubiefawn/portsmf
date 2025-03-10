@@ -1,13 +1,13 @@
 // allegrowr.cpp -- write sequence to an Allegro file (text)
 
-#include "assert.h"
-#include "stdlib.h"
+#include <cassert>
+#include <cstdlib>
 #include <iostream>
 #include <fstream>
 #include <iomanip>
-#include <errno.h>
+#include <cerrno>
 #include <string>
-#include "memory.h"
+#include <memory>
 using namespace std;
 #include "strparse.h"
 #include "allegro.h"

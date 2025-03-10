@@ -1,18 +1,18 @@
-#include "assert.h"
-#include "stdlib.h"
-#include "string.h"
-#include "ctype.h"
-#include "trace.h"
+#include <cassert>
+#include <cstdlib>
+#include <cstring>
+#include <cctype>
 #include <string>
 #include <fstream>
 #include <algorithm>
+#include "trace.h"
 #include "strparse.h"
 #include "allegro.h"
 #include "algrd_internal.h"
+#include "common.h"
 
 using namespace std;
 
-#define streql(s1, s2) (strcmp(s1, s2) == 0)
 #define field_max 80
 
 class Alg_reader {

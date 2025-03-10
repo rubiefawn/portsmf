@@ -9,22 +9,21 @@
 04 apr 03 -- fixed bug in add_track that caused infinite loop
 */
 
-#include "assert.h"
-#include "stdlib.h"
-#include "stdio.h"
-#include "string.h"
-#include "memory.h"
+#include <cassert>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <cinttypes>
+#include <cmath>
+#include <memory>
 #include <iostream>
 #include <fstream>
-#include <inttypes.h>
 using namespace std;
 #include "allegro.h"
 #include "algrd_internal.h"
 #include "algsmfrd_internal.h"
+#include "common.h"
 // #include "trace.h" -- only needed for debugging
-#include "math.h"
-
-#define STREQL(x, y) (strcmp(x, y) == 0)
 
 Alg_atoms symbol_table;
 Serial_read_buffer Alg_track::ser_read_buf; // declare the static variables
@@ -78,7 +77,7 @@ Alg_attribute Alg_atoms::insert_attribute(Alg_attribute attr)
 {
     // should use hash algorithm
     for (int i = 0; i < len; i++) {
-        if (STREQL(attr, atoms[i])) {
+        if (streql(attr, atoms[i])) {
             return atoms[i];
         }
     }
@@ -91,7 +90,7 @@ Alg_attribute Alg_atoms::insert_string(const char *name)
     char attr_type = name[strlen(name) - 1];
     for (int i = 0; i < len; i++) {
         if (attr_type == atoms[i][0] &&
-            STREQL(name, atoms[i] + 1)) {
+            streql(name, atoms[i] + 1)) {
             return atoms[i];
         }
     }
@@ -199,7 +198,7 @@ Alg_parameters *Alg_parameters::remove_key(Alg_parameters **list,
                                            const char *name)
 {
     while (*list) {
-        if (STREQL((*list)->parm.attr_name(), name)) {
+        if (streql()(*list)->parm.attr_name(), name)) {
             Alg_parameters_ptr p = *list;
             *list = p->next;
             p->next = nullptr;
@@ -228,9 +227,9 @@ int Alg_event::get_type_code()
 {
     if (!is_note()) {
         const char* attr = get_attribute();
-        if (STREQL(attr, "gater"))         // volume change
+        if (streql(attr, "gater"))         // volume change
             return ALG_GATE;
-        if (STREQL(attr, "bendr"))         // pitch bend
+        if (streql(attr, "bendr"))         // pitch bend
             return ALG_BEND;
         if (strncmp(attr, "control", 7) == 0)      // control change
             // note that midi control changes have attributes of the form
@@ -239,15 +238,15 @@ int Alg_event::get_type_code()
             // We don't check for decimal numbers in the range 0-127, so any
             // attribute that begins with "control" is an ALG_CONTROL:
             return ALG_CONTROL;
-        if (STREQL(attr, "programi"))      // program change
+        if (streql(attr, "programi"))      // program change
             return ALG_PROGRAM;
-        if (STREQL(attr, "pressurer"))    // pressure change
+        if (streql(attr, "pressurer"))    // pressure change
             return ALG_PRESSURE;
-        if (STREQL(attr, "keysigi"))       // key signature
+        if (streql(attr, "keysigi"))       // key signature
             return ALG_KEYSIG;
-        if (STREQL(attr, "timesig_numi"))  // time signature numerator
+        if (streql(attr, "timesig_numi"))  // time signature numerator
             return ALG_TIMESIG_NUM;
-        if (STREQL(attr, "timesig_deni"))  // time signature denominator
+        if (streql(attr, "timesig_deni"))  // time signature denominator
             return ALG_TIMESIG_DEN;
         return ALG_OTHER;
     }
@@ -2159,7 +2158,8 @@ void Alg_time_sigs::cut(double start, double end, double dur)
     // are no time signatures before beat (Case 2), 
     // or there is one time signature at beat (Case 1)
     } else if (i == 0) {
-        /* do nothing (might be good to assert(false)) */ ;
+        /* do nothing (might be good to assert(false)) */
+        // UNREACHABLE;
     // Case 3: i-1 must be the effective time sig position
     } else { 
         // get the time signature in effect at end
@@ -2298,7 +2298,8 @@ void Alg_time_sigs::trim(double start, double end)
     // are no time signatures before beat (Case 2), 
     // or there is one time signature at beat (Case 1)
     } else if (i == 0) {
-        /* do nothing (might be good to assert(false)) */ ;
+        /* do nothing (might be good to assert(false)) */
+        // UNREACHABLE;
     // Case 3: i-1 must be the effective time sig position
     } else { 
         i -= 1; // index the time signature in effect at start
@@ -2925,13 +2926,7 @@ Alg_event_ptr &Alg_seq::operator[](int i)
         }
         tr++;
     }
-    assert(false); // out of bounds
-    // If C++23 ever becomes an option, prefer std::unreachable()
-#ifdef _MSC_VER
-    __assume(0);
-#elif defined(__GNUC__)
-    __builtin_unreachable();
-#endif
+    UNREACHABLE; // out of bounds
 }
 
 

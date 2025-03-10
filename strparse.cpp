@@ -1,7 +1,7 @@
 #include <string>
 #include <cstring>
 // #include <iostream>  -- for debugging (cout)
-#include "ctype.h"
+#include <cctype>
 using namespace std;
 #include "strparse.h"
 

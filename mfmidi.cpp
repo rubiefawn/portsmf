@@ -10,10 +10,10 @@
 *  2-Mar-92 | GWL : created changelog; MIDIFILE_ERROR to satisfy compiler
 *****************************************************************************/
 
-#include "stdio.h"
+#include <cstdio>
+#include <cstring>
+#include <cassert>
 #include "mfmidi.h"
-#include "string.h"
-#include "assert.h"
 
 
 #define MIDIFILE_ERROR -1

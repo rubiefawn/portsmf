@@ -5,17 +5,17 @@
 // does not work. Currently, it is not used, but kept around for
 // possible debugging needs. -RBD)
 
-#include "stdarg.h"
-#include "stdio.h"
-#include "crtdbg.h"
+#include <cstdarg>
+#include <stdio>
+#include <crtdbg.h>
 
 
 void trace(char *format, ...)
 {
-    char msg[256];
+    char msg[256] = {0};
     va_list args;
     va_start(args, format);
-    _vsnprintf_s(msg, 256, _TRUNCATE, format, args);
+    _vsnprintf_s(msg, sizeof(msg) - 1, _TRUNCATE, format, args);
     va_end(args);
 #ifdef _DEBUG
     _CrtDbgReport(_CRT_WARN, nullptr, nullptr, nullptr, msg);

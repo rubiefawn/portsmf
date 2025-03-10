@@ -1,4 +1,4 @@
-#include <inttypes.h>
+#include <cinttypes>
 typedef int32_t int32;
 
 #define NOTEOFF 0x80

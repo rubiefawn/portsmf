@@ -1,14 +1,14 @@
 
-//#include "stdlib.h"
-//#include "stdio.h"
-//#include "memory.h"
-//#include "assert.h"
+//#include <cstdlib>
+//#include <cstdio>
+//#include <cmemory>
+//#include <cassert>
+//#include <cstring>
 #include <fstream>
 #include "allegro.h"
 #include "mfmidi.h"
 #include "portmidi.h"
 #include "seq2midi.h"
-//#include "string.h"
 //#include "strparse.h"
 
 #ifdef WIN32

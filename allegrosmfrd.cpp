@@ -1,9 +1,9 @@
 // midifile reader
 
-#include "stdlib.h"
-#include "stdio.h"
-#include "string.h"
-#include "assert.h"
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <cassert>
 #include <string>
 #include <fstream>
 #include "allegro.h"
