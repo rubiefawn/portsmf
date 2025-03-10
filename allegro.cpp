@@ -16,7 +16,6 @@
 #include "memory.h"
 #include <iostream>
 #include <fstream>
-#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 using namespace std;
 #include "allegro.h"
@@ -120,7 +119,7 @@ void Alg_parameter::show()
         printf("%s:%s", attr_name(), s);
         break;
     case 'i':
-        printf("%s:"PRId64, attr_name(), i);
+        printf("%s:%" PRId64, attr_name(), i);
         break;
     case 'l':
         printf("%s:%s", attr_name(), (l ? "t" : "f"));
