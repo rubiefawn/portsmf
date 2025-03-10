@@ -198,7 +198,7 @@ Alg_parameters *Alg_parameters::remove_key(Alg_parameters **list,
                                            const char *name)
 {
     while (*list) {
-        if (streql()(*list)->parm.attr_name(), name)) {
+        if (streql((*list)->parm.attr_name(), name)) {
             Alg_parameters_ptr p = *list;
             *list = p->next;
             p->next = nullptr;

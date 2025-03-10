@@ -9,9 +9,9 @@
 #elif defined(_MSC_VER)
 	#define UNREACHABLE __assume(0)
 #elif defined(__GNUC__)
-	#define UNREACHABLE _builtin_unreachable()
+	#define UNREACHABLE __builtin_unreachable()
 #else
-	#error Define UNREACHABLE to your compiler's intrinsic unreachable marker
+	#error Define UNREACHABLE to your compiler’s intrinsic unreachable marker
 #endif
 
 #endif
