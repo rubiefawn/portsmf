@@ -1649,7 +1649,7 @@ void Alg_track::unserialize_track()
     int offset = ser_read_buf.get_posn(); // stored length does not include 'ALGT'
     int bytes = ser_read_buf.get_int32();
     assert(bytes <= ser_read_buf.get_len() - offset);
-    (void)offset; (void)bytes;
+    (void)offset; (void)bytes; // Suppress unused variable warnings in release mode
     units_are_seconds = (bool) ser_read_buf.get_int32();
     int event_count = ser_read_buf.get_int32();
     beat_dur = ser_read_buf.get_double();
@@ -2166,7 +2166,7 @@ void Alg_time_sigs::cut(double start, double end, double dur)
         Alg_time_sig &tsp = time_sigs[i - 1];
         double beats_per_measure = (tsp.num * 4) / tsp.den;
         double measures = (end - tsp.beat) / beats_per_measure;
-        long imeasures = (long)roundl(measures);
+        long imeasures = lround(measures);
         if (!within(measures, imeasures, ALG_EPS)) {
             // end is not on a measure, so we need to insert a time sig
             // to force a bar line at the first measure location after
@@ -2306,7 +2306,7 @@ void Alg_time_sigs::trim(double start, double end)
         Alg_time_sig &tsp = time_sigs[i];
         double beats_per_measure = (tsp.num * 4) / tsp.den;
         double measures = (start - tsp.beat) / beats_per_measure;
-        long imeasures = roundl(measures);
+        long imeasures = lround(measures);
         if (!within(measures, imeasures, ALG_EPS)) {
             // beat is not on a measure, so we need to insert a time sig
             // to force a bar line at the first measure location after
@@ -2551,7 +2551,7 @@ void Alg_time_sigs::insert_beats(double start, double dur)
     // insert a time signature to maintain bar positions if necessary
     double beats_per_measure = (tsnum * 4) / tsden;
     double measures = dur / beats_per_measure; // shift distance
-    long imeasures = (long)roundl(measures);
+    long imeasures = lround(measures);
     if (!within(measures, imeasures, ALG_EPS)) {
         // shift is not a whole number of measures, so we may need to insert
         // time signature after silence
