@@ -49,8 +49,8 @@
 #ifndef ALLEGRO_H
 #define ALLEGRO_H
 #include <cassert>
-#include <istream>
-#include <ostream>
+#include <iostream>
+#include <cstring>
 #include <cstdint>
 
 typedef int64_t int64;
