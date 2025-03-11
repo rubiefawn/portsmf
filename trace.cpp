@@ -18,7 +18,7 @@ void trace(char *format, ...)
     _vsnprintf_s(msg, sizeof(msg) - 1, _TRUNCATE, format, args);
     va_end(args);
 #ifdef _DEBUG
-    _CrtDbgReport(_CRT_WARN, nullptr, nullptr, nullptr, msg);
+    _CrtDbgReport(_CRT_WARN, NULL, NULL, NULL, msg);
 #else
     printf(msg);
 #endif

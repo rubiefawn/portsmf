@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     if (argc < 2) {
         print_help();
     }
-    char *filename = nullptr;
+    char *filename = NULL;
     bool midifile = false;
     bool allegrofile = false;
     bool interactive = true;
