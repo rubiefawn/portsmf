@@ -3,7 +3,6 @@
 #include <cstring>
 #include <cctype>
 #include <string>
-#include <fstream>
 #include <algorithm>
 #include "trace.h"
 #include "strparse.h"

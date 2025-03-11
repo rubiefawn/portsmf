@@ -6,7 +6,7 @@
 // possible debugging needs. -RBD)
 
 #include <cstdarg>
-#include <stdio>
+#include <cstdio>
 #include <crtdbg.h>
 
 

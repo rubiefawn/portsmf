@@ -1,4 +1,5 @@
 #include <cinttypes>
+#include <cstddef>
 
 #define NOTEOFF 0x80
 #define NOTEON 0x90

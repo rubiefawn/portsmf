@@ -7,7 +7,6 @@
 #include <iomanip>
 #include <cerrno>
 #include <string>
-#include <memory>
 using namespace std;
 #include "strparse.h"
 #include "allegro.h"

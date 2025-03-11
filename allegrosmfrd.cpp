@@ -4,8 +4,6 @@
 #include <cstdio>
 #include <cstring>
 #include <cassert>
-#include <string>
-#include <fstream>
 #include "allegro.h"
 #include "algsmfrd_internal.h"
 #include "mfmidi.h"
