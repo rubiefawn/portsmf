@@ -909,7 +909,7 @@ double Alg_time_map::time_to_beat(double time)
 void Alg_time_map::insert_beat(double time, double beat)
 {
     int i = locate_time(time); // i is insertion point
-    if (i < beats.len && within(beats[i].time, time, 0.000001)) {
+    if (i < beats.len && within(beats[i].time, time, ALG_EPS)) {
         // replace beat if time is already in the map
         beats[i].beat = beat;
     } else {
@@ -938,7 +938,7 @@ bool Alg_time_map::insert_tempo(double tempo, double beat)
     if (beat < 0) return false;
     double time = beat_to_time(beat);
     int i = locate_time(time);
-    if (i >= beats.len || !within(beats[i].time, time, 0.000001)) {
+    if (i >= beats.len || !within(beats[i].time, time, ALG_EPS)) {
         insert_beat(time, beat);
     }
     // now i is index of beat where tempo will change
@@ -3339,7 +3339,7 @@ bool Alg_seq::insert_tempo(double bpm, double beat)
     convert_to_beats(); // beats are invariant when changing tempo
     double time = time_map->beat_to_time(beat);
     int i = time_map->locate_time(time);
-    if (i >= time_map->beats.len || !within(time_map->beats[i].time, time, 0.000001)) {
+    if (i >= time_map->beats.len || !within(time_map->beats[i].time, time, ALG_EPS)) {
         insert_beat(time, beat);
     }
     // now i is index of beat where tempo will change
