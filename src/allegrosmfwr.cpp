@@ -62,9 +62,9 @@ private:
 
     void write_delta(double event_time);
     void write_varinum(int num);
-    void write_16bit(int num);
-    void write_24bit(int num);
-    void write_32bit(int num);
+    void write_16bit(int16_t num);
+    void write_24bit(int32_t num);
+    void write_32bit(int32_t num);
 };
 
 
@@ -383,11 +383,11 @@ void Alg_smf_write::write_update(Alg_update *update)
         int frames = decimal(s);
         s += 3;
         int subframes = decimal(s);
-        smpteoffset[0] = (fps << 6) + hours;
-        smpteoffset[1] = mins;
-        smpteoffset[2] = secs;
-        smpteoffset[3] = frames;
-        smpteoffset[4] = subframes;
+        smpteoffset[0] = static_cast<char>((fps << 6) + hours);
+        smpteoffset[1] = static_cast<char>(mins);
+        smpteoffset[2] = static_cast<char>(secs);
+        smpteoffset[3] = static_cast<char>(frames);
+        smpteoffset[4] = static_cast<char>(subframes);
         write_smpteoffset(update, smpteoffset);
 // clean up our macro
 #undef decimal
@@ -594,20 +594,20 @@ void Alg_smf_write::write(std::ostream &file)
 }
 
 
-void Alg_smf_write::write_16bit(int num)
+void Alg_smf_write::write_16bit(int16_t num)
 {
     out_file->put((num & 0xFF00) >> 8);
     out_file->put(num & 0xFF);
 }
 
-void Alg_smf_write::write_24bit(int num)
+void Alg_smf_write::write_24bit(int32_t num)
 {
     out_file->put((num & 0xFF0000) >> 16);
     out_file->put((num & 0xFF00) >> 8);
     out_file->put((num & 0xFF));
 }
 
-void Alg_smf_write::write_32bit(int num)
+void Alg_smf_write::write_32bit(int32_t num)
 {
     out_file->put((num & 0xFF000000) >> 24);
     out_file->put((num & 0xFF0000) >> 16);

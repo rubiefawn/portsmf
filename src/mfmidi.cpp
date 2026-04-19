@@ -57,7 +57,7 @@ int Midifile_reader::readmt(const char *s, int skip)
             errmsg = "EOF while expecting ";
             goto err;
         }
-        b[nread++] = c;
+        b[nread++] = static_cast<char>(c);
     }
     /* See if we found the 4 characters we're looking for */
     if (s[0] == b[0] && s[1] == b[1] && s[2] == b[2] && s[3] == b[3]) {
@@ -222,7 +222,7 @@ void Midifile_reader::readtrack()
             msginit();
 
             while (Mf_toberead > lookfor) {
-                unsigned char c = egetc();
+                c = egetc();
                 if (midifile_error) {
                     return;
                 }

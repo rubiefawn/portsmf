@@ -36,7 +36,7 @@ public:
     double parse_real(string &field);
     void parse_error(string &field, size_t offset, const char *message);
     double parse_dur(string &field, double base);
-    double parse_after_dur(double dur, string &field, int n, double base);
+    double parse_after_dur(double dur, string &field, size_t n, double base);
     double parse_loud(string &field);
     long parse_key(string &field);
     double parse_pitch(string &field);
@@ -221,7 +221,7 @@ bool Alg_reader::parse()
                 field.append(field2);
             }
             while (field[0]) {
-                char first = toupper(field[0]);
+                int first = toupper(field[0]);
                 if (strchr("ABCDEFGKLPUSIQHW-", first)) {
                     valid = true; // it's a note or event
                 }
@@ -553,9 +553,9 @@ double Alg_reader::parse_dur(string &field, double base)
 
 
 double Alg_reader::parse_after_dur(double dur, string &field,
-                                   int n, double base)
+                                   size_t n, double base)
 {
-    if (static_cast<int>(field.length()) == n) {
+    if (field.length() == n) {
         return dur;
     }
     if (toupper(field[n]) == 'T') {
@@ -638,7 +638,7 @@ long Alg_reader::parse_after_key(int key, string &field, int n)
     if (static_cast<int>(field.length()) == n) {
         return key;
     }
-    char c = toupper(field[n]);
+    int c = toupper(field[n]);
     if (c == 'S') {
         return parse_after_key(key + 1, field, n + 1);
     }

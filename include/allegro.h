@@ -137,7 +137,7 @@ public:
     void copy(Alg_parameter *); //!< copy from another parameter
     char attr_type() { return alg_attr_type(attr); }
     const char *attr_name() { return alg_attr_name(attr); }
-    void set_attr(Alg_attribute a) { attr = a; }
+    void set_attr(Alg_attribute attribute) { attr = attribute; }
     void show();
 };
 
@@ -611,7 +611,7 @@ public:
         len = n;
     }
     char get_char() { return *ptr++; }
-    void unget_chars(int n) { ptr -= n; } // undo n get_char() calls
+    void unget_chars(size_t n) { ptr -= n; } //!< Undo n get_char() calls
     int32_t get_int32() {
         const int32_t i = *(reinterpret_cast<int32_t *>(ptr));
         ptr += sizeof(int32_t);
@@ -635,7 +635,7 @@ public:
         get_pad();
         return s;
     }
-    void check_input_buffer(size_t needed) {
+    void check_input_buffer([[maybe_unused]] size_t needed) {
         assert(get_posn() + needed <= len);
     }
 };
@@ -945,7 +945,7 @@ class Alg_tracks {
 private:
     size_t maxlen;
     void expand();
-    void expand_to(int new_max);
+    void expand_to(size_t new_max);
     size_t len;
 public:
     Alg_track **tracks; //!< tracks is array of pointers
@@ -995,7 +995,7 @@ class Alg_iterator {
 private:
     size_t maxlen;
     void expand();
-    void expand_to(int new_max);
+    void expand_to(size_t new_max);
     size_t len;
     Alg_seq *seq;
     Alg_pending_event *pending_events;

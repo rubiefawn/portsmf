@@ -719,7 +719,7 @@ void test32() // serialize big midi file and unserialize
     void *buffer;
     size_t bytes;
     seq->serialize(&buffer, &bytes);
-    printf("Serialized %ld bytes\n", bytes);
+    printf("Serialized %zu bytes\n", bytes);
     Alg_seq *new_seq = (Alg_seq*) seq->unserialize(buffer, bytes);
     ofstream sfile("bigseq2.alg", ios::out | ios::binary);
     new_seq->write(sfile, true);

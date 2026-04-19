@@ -1168,7 +1168,7 @@ void Alg_time_map::cut(double start, double len, bool units_are_seconds)
     // now, we're correct up to beats[i] and beats[i] happens at start.
     // find first beat after end so we can start shifting from there
     i = i + 1;
-    int start_index = i;
+    size_t start_index = i;
     while (i < length() && beats[i].time < end + ALG_EPS) {
         i++;
     }
@@ -1509,8 +1509,7 @@ void Alg_track::serialize_parameter(Alg_parameter *parm)
 {
     // add eight to account for name + zero end-of-string and the
     // possibility of adding 7 padding bytes
-    long len = strlen(parm->attr_name()) + 8;
-    ser_write_buf.check_buffer(len);
+    ser_write_buf.check_buffer(strlen(parm->attr_name()) + 8);
     ser_write_buf.set_string(parm->attr_name());
     ser_write_buf.pad();
     switch (parm->attr_type()) {
@@ -2093,7 +2092,7 @@ size_t Alg_time_sigs::find_beat(double beat)
 
 double Alg_time_sigs::get_bar_len(double beat)
 {
-    int i = find_beat(beat);
+    size_t i = find_beat(beat);
     double num = 4.0;
     double den = 4.0;
     if (i != 0) {
@@ -2593,7 +2592,7 @@ Alg_tracks::~Alg_tracks()
 }
 
 
-void Alg_tracks::expand_to(int new_max)
+void Alg_tracks::expand_to(size_t new_max)
 {
     maxlen = new_max;
     Alg_track **new_tracks = new Alg_track*[maxlen];
@@ -2672,7 +2671,7 @@ void Alg_tracks::set_in_use(bool flag)
 }
 
 
-void Alg_iterator::expand_to(int new_max)
+void Alg_iterator::expand_to(size_t new_max)
 {
     maxlen = new_max;
     Alg_pending_event *new_pending_events = new Alg_pending_event[maxlen];
@@ -2749,8 +2748,8 @@ void Alg_iterator::insert(Alg_events *events, size_t index,
                event->get_end_time(), offset);
     }
      * END DEBUG */
-    int loc = len;
-    int loc_parent = HEAP_PARENT(loc);
+    size_t loc = len;
+    size_t loc_parent = HEAP_PARENT(loc);
     len++;
     // sift up:
     while (loc > 0 &&
@@ -3549,7 +3548,7 @@ void Alg_iterator::end()
 
 void Alg_seq::merge_tracks()
 {
-    long sum = 0;
+    size_t sum = 0;
     for (size_t i = 0; i < track_list.length(); i++) {
         sum = sum + track(i)->length();
     }
@@ -3557,7 +3556,7 @@ void Alg_seq::merge_tracks()
     Alg_event **notes = new Alg_event*[sum];
     Alg_iterator iterator(this, false);
     iterator.begin();
-    long notes_index = 0;
+    size_t notes_index = 0;
 
     Alg_event *event;
     while ((event = iterator.next())) {
