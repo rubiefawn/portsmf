@@ -16,12 +16,6 @@
 #include "algrd_internal.h"
 #include "algsmfrd_internal.h"
 
-#if defined(_WIN32)
-// 4311 is type cast ponter to long warning
-// 4996 is warning against strcpy
-// 4267 is size_t to long warning
-#pragma warning(disable: 4311 4996 4267)
-#endif
 DLLEXPORT Alg_atoms symbol_table;
 Serial_read_buffer Alg_track::ser_read_buf; // declare the static variables
 Serial_write_buffer Alg_track::ser_write_buf;
@@ -1468,7 +1462,7 @@ void Alg_track::serialize_track()
     ser_write_buf.set_char('L');
     ser_write_buf.set_char('G');
     ser_write_buf.set_char('T');
-    long length_offset = ser_write_buf.get_posn(); // save location for track length
+    size_t length_offset = ser_write_buf.get_posn(); // save location for track length
     ser_write_buf.set_int32(0); // room to write track length
     ser_write_buf.set_int32(units_are_seconds);
     ser_write_buf.set_double(beat_dur);
@@ -1488,7 +1482,7 @@ void Alg_track::serialize_track()
             ser_write_buf.set_float(note->pitch);
             ser_write_buf.set_float(note->loud);
             ser_write_buf.set_double(note->dur);
-            long parm_num_offset = ser_write_buf.get_posn();
+            size_t parm_num_offset = ser_write_buf.get_posn();
             long parm_num = 0;
             ser_write_buf.set_int32(0); // placeholder for no. parameters
             Alg_parameters *parms = note->parameters;
@@ -1573,10 +1567,6 @@ Alg_track *Alg_track::unserialize(void *buffer, size_t len)
     }
 }
 
-
-#if defined(_WIN32)
-#pragma warning(disable: 4800) // long to bool performance warning
-#endif
 
 /* Note: this Alg_seq must have a default initialized Alg_time_map.
  * It will be filled in with data from the ser_read_buf buffer.
@@ -1714,9 +1704,6 @@ void Alg_track::unserialize_parameter(Alg_parameter *parm_ptr)
     } /* switch (parm_ptr->attr_type()) */
 }
 
-#if defined(_WIN32)
-#pragma warning(default: 4800)
-#endif
 
 void Alg_track::set_time_map(Alg_time_map *map)
 {
@@ -2907,9 +2894,6 @@ Alg_track *Alg_seq::track(size_t i)
     return &(track_list[i]);
 }
 
-#if defined(_WIN32)
-#pragma warning(disable: 4715) // ok not to return a value here
-#endif
 
 Alg_event *&Alg_seq::operator[](size_t i)
 {
@@ -2925,9 +2909,6 @@ Alg_event *&Alg_seq::operator[](size_t i)
     // throw runtime error instead of using assert
     throw std::runtime_error("&Alg_seq::operator[] - out of bounds");
 }
-#if defined(_WIN32)
-#pragma warning(default: 4715)
-#endif
 
 
 void Alg_seq::convert_to_beats()

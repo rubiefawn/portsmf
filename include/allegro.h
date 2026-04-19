@@ -635,7 +635,7 @@ public:
         get_pad();
         return s;
     }
-    void check_input_buffer(long needed) {
+    void check_input_buffer(size_t needed) {
         assert(get_posn() + needed <= len);
     }
 };
