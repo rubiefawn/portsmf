@@ -15,18 +15,21 @@ class Alg_reader {
 public:
     std::istream *file;
     string input_line;
-    int line_no;
+    int line_no = 0;
     String_parse line_parser;
-    bool line_parser_flag;
+    bool line_parser_flag = false;
     string field;
-    bool error_flag;
+    bool error_flag = false;
     Alg_seq *seq;
-    double tsnum;
-    double tsden;
-    double offset;
-    bool offset_found;
+    double tsnum = 4.0;
+    double tsden = 4.0;
+    double offset = 0.0;
+    bool offset_found = false;
 
-    Alg_reader(std::istream *a_file, Alg_seq *new_seq);
+    //! The caller of the constructor owns \p new_seq and is responsible
+    //! for deleting it
+    Alg_reader(std::istream *a_file, Alg_seq *new_seq) : file{a_file}, seq{new_seq} {};
+
     void readline();
     Alg_parameters *process_attributes(Alg_parameters *attributes,
                                           double time);
@@ -58,21 +61,6 @@ double Alg_reader::parse_pitch(string &field)
     } else {
         return static_cast<double>(parse_key(field));
     }
-}
-
-
-// it is the responsibility of the caller to delete
-// the seq
-Alg_reader::Alg_reader(std::istream *a_file, Alg_seq *new_seq)
-{
-    file = a_file; // save the file
-    line_parser_flag = false;
-    line_no = 0;
-    tsnum = 4; // default time signature
-    tsden = 4;
-    seq = new_seq;
-    offset = 0.0;
-    offset_found = false;
 }
 
 

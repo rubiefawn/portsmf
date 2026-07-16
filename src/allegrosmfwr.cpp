@@ -24,16 +24,22 @@ public:
 
 class Alg_smf_write {
 public:
-    Alg_smf_write(Alg_seq *seq);
+    Alg_smf_write(Alg_seq *s) : seq{s} {};
     ~Alg_smf_write() = default;
-    long channels_per_track; // used to encode track number into chan field
-    // chan is actual_channel + channels_per_track * track_number
-    // default is 100, set this to 0 to merge all tracks to 16 channels
+
+    //! \brief Used to encode track number into chan field
+    //!
+    //! chan is actual_channel + channels_per_track * track_number.
+    //! Default is 100, set this to 0 to merge all tracks to 16 channels
+    long channels_per_track = 100;
 
     void write(std::ostream &file /* , midiFileFormat = 1 */);
 
 private:
-    long previous_divs; // time in ticks of most recently written event
+    //! \brief Time in ticks of most recently written event
+    //!
+    //! Used to compute deltas for midifile
+    long previous_divs = 0;
 
     void write_track(int i);
     void write_tempo(int divs, int tempo);
@@ -49,16 +55,26 @@ private:
     int to_midi_channel(int channel);
     int to_track(int channel);
 
-    std::ostream *out_file;
+    std::ostream *out_file = nullptr;
 
     Alg_seq *seq;
 
-    int division; // divisions per quarter note, default = 120
-    int initial_tempo;
+    //! \brief Divisions per quarter note
+    //!
+    //! Regarding the default value: at 100bpm (a nominal tempo value),
+    //! we would like a division to represent 1ms of time. So
+    //! d ticks/beat * 100 beats/min = 60,000 ms/min * 1 tick/ms
+    //! solving for d, d = 600
+    int division = 600;
+    int initial_tempo = 500000; // FIXME: Unused?
 
-    int keysig;          // number of sharps (+) or flats (-), -99 for undefined
-    char keysig_mode; // 'M' or 'm' for major/minor
-    double keysig_when;    // time of key signature
+    int keysig = -99; //!< Mumber of sharps (+) or flats (-), -99 for undefined
+    char keysig_mode = 0; //!< 'M' or 'm' for major/minor
+
+    //! \brief Time of key signature
+    //!
+    //! Only used when \ref keysig and \ref keysig_mode are both set
+    double keysig_when = 0.0;
 
     void write_delta(double event_time);
     void write_varinum(int num);
@@ -66,25 +82,6 @@ private:
     void write_24bit(int num);
     void write_32bit(int num);
 };
-
-
-Alg_smf_write::Alg_smf_write(Alg_seq *a_seq)
-{
-    out_file = nullptr;
-
-    // at 100bpm (a nominal tempo value), we would like a division
-    // to represent 1ms of time. So
-    // d ticks/beat * 100 beats/min = 60,000 ms/min * 1 tick/ms
-    // solving for d, d = 600
-    division = 600;         // divisions per quarter note
-    keysig = -99;
-    keysig_mode = 0;
-    initial_tempo = 500000;
-
-    seq = a_seq;
-
-    previous_divs = 0; // used to compute deltas for midifile
-}
 
 
 // sorting is quite subtle due to rounding

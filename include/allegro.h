@@ -195,7 +195,7 @@ public:
 // abstract class.
 class Alg_event {
 protected:
-    bool selected;
+    bool selected = false;
     char type; //!< 'e' event, 'n' note, 'u' update
     long key; //!< note identifier
     static const char* description; //!< static buffer for debugging (in Alg_event)
@@ -328,7 +328,6 @@ public:
     //! debugging purposes only.
     const char *GetDescription();
 
-    Alg_event() { selected = false; }
     virtual ~Alg_event() = default;
 };
 
@@ -340,8 +339,8 @@ public:
     float pitch; //!< pitch in semitones (69 = A440)
     float loud;  //!< dynamic corresponding to MIDI velocity
     double dur;   //!< duration in seconds (normally to release point)
-    Alg_parameters *parameters; //!< attribute/value pair list
-    Alg_note() { type = 'n'; parameters = nullptr; }
+    Alg_parameters *parameters = nullptr; //!< attribute/value pair list
+    Alg_note() { type = 'n'; }
     void show() override;
 };
 

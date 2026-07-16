@@ -4,8 +4,8 @@
 
 class String_parse {
 public:
-    int pos;
-    std::string *str;
+    int pos = 0;
+    std::string *str = nullptr;
     void init(std::string *s) {
         str = s;
         pos = 0;

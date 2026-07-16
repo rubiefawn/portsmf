@@ -20,18 +20,28 @@ class Alg_midifile_reader: public Midifile_reader {
 public:
     std::istream *file;
     Alg_seq *seq;
-    int divisions;
-    Alg_note_list *note_list;
-    Alg_track *track;
-    int track_number; // the number of the (current) track
-    // chan is actual_channel + channel_offset_per_track * track_num +
-    //                          channel_offset_per_track * port
-    long channel_offset_per_track; // used to encode track number into channel
-        // default is 0, set this to 0 to merge all tracks to 16 channels
-    long channel_offset_per_port; // used to encode port number into channel
-        // default is 16, set to 0 to ignore port prefix meta events
-    // while reading, this is channel_offset_per_track * track_num
-    int channel_offset;
+    int divisions = 0; // Intentionally invalid until Mf_header() is called for the first time
+    Alg_note_list *note_list = nullptr;
+    Alg_track *track = nullptr;
+
+    //! \brief The number of the (current) track
+    //!
+    //! chan is actual_channel + channel_offset_per_track * track_num +
+    //! channel_offset_per_track * port
+    int track_number = -1; // -1 indicates no tracks since they count from 0
+
+    //! \brief Encodes track number into channel
+    //!
+    //! Default is 0, set this to 0 to merge all tracks to 16 channels
+    long channel_offset_per_track = 0;
+
+    //! \brief Encodes port number into channel
+    //!
+    //! Default is 16, set to 0 to ignore port prefix meta events.
+    //! While reading, this is channel_offset_per_track * track_num
+    long channel_offset_per_port = 16;
+
+    int channel_offset = 0;
 
     Alg_midifile_reader(std::istream &f, Alg_seq *new_seq) {
         file = &f;

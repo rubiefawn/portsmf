@@ -37,7 +37,7 @@ public:
 	//! class. I don't understand this, so finalize() is a workaround. -RBD
 
 protected:
-    int midifile_error;
+    int midifile_error = 0;
 
     virtual void *Mf_malloc(size_t size) = 0; //!< malloc()
     virtual void Mf_free(void *obj, size_t size) = 0; //!< free()
