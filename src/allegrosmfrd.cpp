@@ -2,6 +2,7 @@
 //! midifile reader
 
 #include <cassert>
+#include <cstddef>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -328,7 +329,7 @@ void Alg_midifile_reader::binary_msg(int len, unsigned char *msg,
 #ifdef _MSC_VER
 #pragma warning(disable: 4996) // hexstr is long enough
 #endif
-        sprintf(hexstr + 2 * i, "%02x", (0xFF & msg[i]));
+        sprintf(&hexstr[2 * static_cast<ptrdiff_t>(i)], "%02x", (0xFF & msg[i]));
 #ifdef _MSC_VER
 #pragma warning(default: 4996)
 #endif
