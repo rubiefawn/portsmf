@@ -80,7 +80,6 @@ private:
     //! d ticks/beat * 100 beats/min = 60,000 ms/min * 1 tick/ms
     //! solving for d, d = 600
     int division = 600;
-    int initial_tempo = 500000; // FIXME: Unused?
 
     int keysig = -99; //!< Mumber of sharps (+) or flats (-), -99 for undefined
     char keysig_mode = 0; //!< 'M' or 'm' for major/minor
