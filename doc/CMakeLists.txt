@@ -1,17 +1,15 @@
-find_package(Doxygen REQUIRED)
-
-set(DOXYGEN_INPUT_DIR ${PROJECT_SOURCE_DIR})
-set(DOXYGEN_OUTPUT_DIR ${PROJECT_BINARY_DIR}/doc)
-
-set(DOXYGEN_CONFIGURED_INPUT ${DOXYGEN_OUTPUT_DIR}/doxyfile)
-configure_file(${DOXYGEN_INPUT_DIR}/doc/Doxyfile.in ${DOXYGEN_CONFIGURED_INPUT} @ONLY)
-
-add_custom_target(doc ALL
-  COMMAND ${CMAKE_COMMAND} -E echo_append "Building documentation..."
-  COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_CONFIGURED_INPUT}
-  COMMAND ${CMAKE_COMMAND} -E echo "Done."
-  WORKING_DIRECTORY ${DOXYGEN_INPUT_DIR})
-
-install(FILES ${DOXYGEN_OUTPUT_DIR}/html
-  DESTINATION ${CMAKE_INSTALL_DOCDIR}
-  COMPONENT doc)
+find_package(Doxygen)
+if(Doxygen_FOUND)
+  configure_file(Doxyfile.in Doxyfile @ONLY)
+  doxygen_add_docs(
+    doc
+    COMMENT "Generating HTML documentation with Doxygen"
+    CONFIG_FILE ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+  )
+  install(
+    FILES ${PROJECT_BINARY_DIR}/doc/html
+    DESTINATION ${CMAKE_INSTALL_DOCDIR}
+    COMPONENT doc
+    OPTIONAL
+  )
+ENDIF()

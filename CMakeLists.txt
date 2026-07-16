@@ -1,11 +1,15 @@
 cmake_minimum_required(VERSION 3.10)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-project(PortSMF VERSION 239.9999 LANGUAGES CXX)
+project(
+  PortSMF
+  VERSION 239.9999
+  DESCRIPTION "C++ library for reading and writing Standard MIDI files"
+  HOMEPAGE_URL "https://github.com/portsmf/portsmf"
+  LANGUAGES CXX
+)
 set(SOVERSION 1)
 set(LIBRARY_VERSION 1.0.${CMAKE_PROJECT_VERSION})
-
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang"
    OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -19,7 +23,6 @@ option(BUILD_SHARED_LIBS "Build dynamic library" ON)
 add_library(PortSMF
   src/allegro.cpp
   src/allegrord.cpp
-  src/allegroserial.cpp
   src/allegrosmfrd.cpp
   src/allegrosmfwr.cpp
   src/allegrowr.cpp
@@ -34,8 +37,6 @@ set_target_properties(PortSMF PROPERTIES
   OUTPUT_NAME portSMF
   SOVERSION ${SOVERSION}
   VERSION ${LIBRARY_VERSION}
-)
-set_target_properties(PortSMF PROPERTIES
   WINDOWS_EXPORT_ALL_SYMBOLS TRUE
 )
 
@@ -97,7 +98,4 @@ if(BUILD_TESTING)
   add_subdirectory(test)
 endif()
 
-option(BUILD_DOCS "Build documentation" OFF)
-if(BUILD_DOCS)
-  add_subdirectory(doc)
-endif()
+add_subdirectory(doc)
