@@ -100,7 +100,7 @@ private:
     void expand(); // make more space
 };
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 #define DLLEXPORT __declspec(dllexport)
 #else
 #define DLLEXPORT

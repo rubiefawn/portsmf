@@ -16,12 +16,13 @@
 #include "algrd_internal.h"
 #include "algsmfrd_internal.h"
 
-#if defined(_WIN32)
+#ifdef _MSC_VER
 // 4311 is type cast ponter to long warning
 // 4996 is warning against strcpy
 // 4267 is size_t to long warning
 #pragma warning(disable: 4311 4996 4267)
 #endif
+
 DLLEXPORT Alg_atoms symbol_table;
 Serial_read_buffer Alg_track::ser_read_buf; // declare the static variables
 Serial_write_buffer Alg_track::ser_write_buf;
@@ -1584,8 +1585,9 @@ Alg_seq *Alg_track::to_alg_seq() {
 
 
 
-#if defined(_WIN32)
-#pragma warning(disable: 4800) // long to bool performance warning
+#ifdef _MSC_VER
+// long to bool performance warning
+#pragma warning(disable: 4800)
 #endif
 
 /* Note: this Alg_seq must have a default initialized Alg_time_map.
@@ -1725,7 +1727,7 @@ void Alg_track::unserialize_parameter(Alg_parameter *parm_ptr)
     } /* switch (parm_ptr->attr_type()) */
 }
 
-#if defined(_WIN32)
+#ifdef _MSC_VER
 #pragma warning(default: 4800)
 #endif
 
@@ -2925,8 +2927,9 @@ Alg_track *Alg_seq::track(int i)
     return &(track_list[i]);
 }
 
-#if defined(_WIN32)
-#pragma warning(disable: 4715) // ok not to return a value here
+#ifdef _MSC_VER
+// ok not to return a value here
+#pragma warning(disable: 4715)
 #endif
 
 Alg_event *&Alg_seq::operator[](int i)
@@ -2945,7 +2948,7 @@ Alg_event *&Alg_seq::operator[](int i)
     // throw runtime error instead of using assert
     throw std::runtime_error("&Alg_seq::operator[] - out of bounds");
 }
-#if defined(_WIN32)
+#ifdef _MSC_VER
 #pragma warning(default: 4715)
 #endif
 

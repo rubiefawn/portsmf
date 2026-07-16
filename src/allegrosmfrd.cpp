@@ -177,11 +177,11 @@ void Alg_midifile_reader::Mf_header(int format, int /*ntrks*/, int division)
 {
     if (format > 1) {
         char msg[80];
-#if defined(_WIN32)
+#ifdef _MSC_VER
 #pragma warning(disable: 4996) // msg is long enough
 #endif
         sprintf(msg, "file format %d not implemented", format);
-#if defined(_WIN32)
+#ifdef _MSC_VER
 #pragma warning(default: 4996)
 #endif
         Mf_error(msg);
@@ -272,11 +272,11 @@ void Alg_midifile_reader::Mf_controller(int chan, int control, int val)
 {
     Alg_parameter parameter;
     char name[32];
-#if defined(_WIN32)
+#ifdef _MSC_VER
 #pragma warning(disable: 4996) // name is long enough
 #endif
     sprintf(name, "control%dr", control);
-#if defined(_WIN32)
+#ifdef _MSC_VER
 #pragma warning(default: 4996)
 #endif
     parameter.set_attr(symbol_table.insert_string(name));
@@ -322,11 +322,11 @@ void Alg_midifile_reader::binary_msg(int len, unsigned char *msg,
     Alg_parameter parameter;
     char *hexstr = new char[len * 2 + 1];
     for (int i = 0; i < len; i++) {
-#if defined(_WIN32)
+#ifdef _MSC_VER
 #pragma warning(disable: 4996) // hexstr is long enough
 #endif
         sprintf(hexstr + 2 * i, "%02x", (0xFF & msg[i]));
-#if defined(_WIN32)
+#ifdef _MSC_VER
 #pragma warning(default: 4996)
 #endif
     }
@@ -352,11 +352,12 @@ void Alg_midifile_reader::Mf_arbitrary(int /*len*/, unsigned char* /*msg*/)
 void Alg_midifile_reader::Mf_metamisc(int type, int /*len*/, unsigned char* /*msg*/)
 {
     char text[128];
-#if defined(_WIN32)
-#pragma warning(disable: 4996) // text is long enough
+#ifdef _MSC_VER
+// text is long enough
+#pragma warning(disable: 4996)
 #endif
     sprintf(text, "metamsic data, type 0x%x, ignored", type);
-#if defined(_WIN32)
+#ifdef _MSC_VER
 #pragma warning(default: 4996)
 #endif
     Mf_error(text);
@@ -379,12 +380,12 @@ void Alg_midifile_reader::Mf_smpte(int hours, int mins, int secs,
     char text[32];
     int fps = (hours >> 6) & 3;
     hours &= 0x1F;
-#if defined(_WIN32)
+#ifdef _MSC_VER
 #pragma warning(disable: 4996) // text is long enough
 #endif
     sprintf(text, "%sfps:%02dh:%02dm:%02ds:%02d.%02df",
             fpsstr[fps], hours, mins, secs, frames, subframes);
-#if defined(_WIN32)
+#ifdef _MSC_VER
 #pragma warning(default: 4996)
 #endif
     Alg_parameter smpteoffset;
