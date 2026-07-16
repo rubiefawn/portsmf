@@ -377,7 +377,7 @@ public:
     //! Alg_events instance is deleted while "in_use", an assertion will fail.
     bool in_use;
     virtual int length() { return len; }
-    Alg_event *&operator[](int i) {
+    virtual Alg_event *&operator[](int i) {
         assert(i >= 0 && i < len);
         return events[i];
     }
@@ -438,7 +438,6 @@ public:
     //! When applied to an Alg_seq, events are enumerated track
     //! by track with increasing indices. This operation is not
     //! particularly fast on an Alg_seq.
-    virtual Alg_event *&operator[](int i);
     Alg_event_list() { sequence_number = 0;
         beat_dur = 0.0; real_dur = 0.0; events_owner = nullptr; type = 'e'; }
     Alg_event_list(Alg_track *owner);
@@ -712,10 +711,6 @@ protected:
 public:
     void serialize_track();
     void unserialize_track();
-    Alg_event *&operator[](int i) override {
-        assert(i >= 0 && i < len);
-        return events[i];
-    }
     Alg_track() { units_are_seconds = false; time_map = nullptr;
                   set_time_map(nullptr); type = 't'; }
     //! initialize empty track with a time map

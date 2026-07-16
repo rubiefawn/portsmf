@@ -733,12 +733,6 @@ Alg_event_list::Alg_event_list(Alg_track *owner)
 }
 
 
-Alg_event *&Alg_event_list::operator [](int i)
-{
-    assert(i >= 0 && i < len);
-    return events[i];
-}
-
 void Alg_event_list::set_start_time(Alg_event *event, double t)
 {
     // For Alg_event_list, find the owner and do the update there
