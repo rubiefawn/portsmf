@@ -450,13 +450,13 @@ void Alg_smf_write::write_track(int i)
         event_queue *current = pending;
         pending = pending->next;
         if (current->type == 'n') {
-            Alg_note *n = (Alg_note*) notes[current->index];
+            auto *n = (Alg_note*) notes[current->index];
             if (n->is_note()) {
                 write_note(n, true);
                 pending = push(pending, new event_queue('o',
                       TICK_TIME(n->time + n->dur, -1), current->index, nullptr));
             } else if (n->is_update()) {
-                Alg_update *u = (Alg_update*) n;
+                auto *u = (Alg_update*) n;
                 write_update(u);
             }
             int next = current->index + 1;
@@ -466,7 +466,7 @@ void Alg_smf_write::write_track(int i)
                 pending = push(pending, current);
             }
         } else if (current->type == 'o') { //note-off
-            Alg_note *n = (Alg_note*) notes[current->index];
+            auto *n = (Alg_note*) notes[current->index];
             write_note(n, false);
             delete current;
         } else if (current->type == 'c') { // tempo change

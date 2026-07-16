@@ -183,7 +183,7 @@ bool Alg_reader::parse()
                 // must be at time zero
                 if (field.length() > 0) {
                     // insert the field as sequence name or track name
-                    Alg_update *update = new Alg_update;
+                    auto *update = new Alg_update;
                     update->chan = -1;
                     update->time = 0;
                     update->set_identifier(-1);
@@ -358,7 +358,7 @@ bool Alg_reader::parse()
                 attributes = process_attributes(attributes, time);
                 // if there's a duration or pitch, make a note:
                 if (new_pitch_flag || dur_flag) {
-                    Alg_note *note_ptr = new Alg_note;
+                    auto *note_ptr = new Alg_note;
                     note_ptr->chan = voice;
                     note_ptr->time = time;
                     note_ptr->dur = dur;
@@ -378,7 +378,7 @@ bool Alg_reader::parse()
                         update_key = key;
                     }
                     if (loud_flag) {
-                        Alg_update *new_upd = new Alg_update;
+                        auto *new_upd = new Alg_update;
                         new_upd->chan = voice;
                         new_upd->time = time;
                         new_upd->set_identifier(update_key);
@@ -391,7 +391,7 @@ bool Alg_reader::parse()
                     }
                     if (attributes) {
                         while (attributes) {
-                            Alg_update *new_upd = new Alg_update;
+                            auto *new_upd = new Alg_update;
                             new_upd->chan = voice;
                             new_upd->time = time;
                             new_upd->set_identifier(update_key);

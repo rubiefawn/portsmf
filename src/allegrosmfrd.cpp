@@ -202,7 +202,7 @@ void Alg_midifile_reader::Mf_on(int chan, int key, int vel)
         Mf_off(chan, key, vel);
         return;
     }
-    Alg_note *note = new Alg_note();
+    auto *note = new Alg_note();
     note_list = new Alg_note_list(note, note_list);
     /*    trace("on: %d at %g\n", key, get_time()); */
     note->time = get_time();
@@ -239,7 +239,7 @@ void Alg_midifile_reader::Mf_off(int chan, int key, int /*vel*/)
 
 void Alg_midifile_reader::update(int chan, int key, Alg_parameter *param)
 {
-    Alg_update *update = new Alg_update;
+    auto *update = new Alg_update;
     update->time = get_time();
     update->chan = chan;
     if (chan != -1) {
