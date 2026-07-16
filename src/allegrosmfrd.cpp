@@ -11,8 +11,7 @@ class Alg_note_list {
 public:
     Alg_note *note;
     class Alg_note_list *next;
-    Alg_note_list(Alg_note *n, class Alg_note_list *list) {
-        note = n; next = list; }
+    Alg_note_list(Alg_note *n, class Alg_note_list *list) : note{n}, next{list} {}
 };
 
 
@@ -43,19 +42,12 @@ public:
 
     int channel_offset = 0;
 
-    Alg_midifile_reader(std::istream &f, Alg_seq *new_seq) {
-        file = &f;
-        note_list = nullptr;
-        seq = new_seq;
-        channel_offset_per_track = 0;
-        channel_offset_per_port = 16;
-        track_number = -1; // no tracks started yet, 1st will be #0
-        meta_channel = -1;
-        port = 0;
-    }
-    // delete destroys the seq member as well, so set it to nullptr if you
-    // copied the pointer elsewhere
+    Alg_midifile_reader(std::istream &f, Alg_seq *new_seq) : file{&f}, seq{new_seq} {}
+
+    //! delete destroys the seq member as well, so set it to nullptr if you
+    //! copied the pointer elsewhere
     ~Alg_midifile_reader();
+
     // the following is used to load the Alg_seq from the file:
     bool parse();
 
@@ -64,8 +56,8 @@ public:
     long get_currtime() { return Mf_currtime; }
 
 protected:
-    int meta_channel; // the channel for meta events, set by MIDI chan prefix
-    int port; // value from the portprefix meta event
+    int meta_channel = -1; //!< The channel for meta events, set by MIDI chan prefix
+    int port = 0; //!< Value from the portprefix meta event
 
     double get_time();
     void update(int chan, int key, Alg_parameter *param);

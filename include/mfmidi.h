@@ -24,10 +24,9 @@
 class Midifile_reader {
 public:
     void midifile();
-    int Mf_nomerge; //!< 1 => continue'ed system exclusives are not collapsed.
-    long Mf_currtime; //!< current time in delta-time units
-    int Mf_skipinit;   //!< 1 if initial garbage should be skipped
-    Midifile_reader();
+    int Mf_nomerge = 0; //!< 1 => continue'ed system exclusives are not collapsed.
+    long Mf_currtime = 0; //!< current time in delta-time units
+    int Mf_skipinit = 0;   //!< 1 if initial garbage should be skipped
 	//! call finalize() when done or you may leak memory.
 	void finalize();  /* clean up before deletion */
 	//! \class Midifile_reader
@@ -69,7 +68,7 @@ protected:
     virtual void Mf_text(int type, int len, unsigned char *msg) = 0;
 
 private:
-    long Mf_toberead;
+    long Mf_toberead = 0;
 
     long readvarinum();
     long read32bit();
@@ -92,9 +91,7 @@ private:
     void msgadd(int c);
     void chanmessage(int status, int c1, int c2);
 
-    unsigned char *Msgbuff;
-    long Msgsize;
-    long Msgindex;
+    unsigned char *Msgbuff = nullptr; //!< Message buffer
+    long Msgsize = 0; //!< Size of currently allocated Msg
+    long Msgindex = 0; //!< Index of next available location in Msg
 };
-
-

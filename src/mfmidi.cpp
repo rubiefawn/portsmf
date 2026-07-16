@@ -521,18 +521,6 @@ void Midifile_reader::mferror(const char *s)
 
 #define MSGINCREMENT 128
 
-Midifile_reader::Midifile_reader()
-{
-    Mf_nomerge = 0;
-    Mf_currtime = 0L;
-    Mf_skipinit = 0;
-    Mf_toberead = 0;
-
-    Msgbuff = nullptr;  /* message buffer */
-    Msgsize = 0;        /* Size of currently allocated Msg */
-    Msgindex = 0;       /* index of next available location in Msg */
-}
-
 void Midifile_reader::finalize()
 {
     if (Msgbuff) {

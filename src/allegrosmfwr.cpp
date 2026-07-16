@@ -12,13 +12,13 @@
 //
 class event_queue{
 public:
-  char type;//'n' for note, 'o' for off, 's' for time signature,
-            // 'c' for tempo changes
+  //! \brief `'n'` for note, `'o'` for off, `'s'` for time signature,
+  //! `'c'` for tempo changes
+  char type;
   double time;
-  long index; //of the event in mSeq->notes
+  long index; // of the event in mSeq->notes
   class event_queue *next;
-  event_queue(char t, double when, long x, class event_queue *n) {
-        type = t; time = when; index = x; next = n; }
+  event_queue(char t, double when, long x, class event_queue *n) : type{t}, time{when}, index{x}, next{n} {}
 };
 
 

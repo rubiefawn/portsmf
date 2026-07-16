@@ -73,10 +73,6 @@ using Alg_attribute = const char*;
 //! strings
 class Alg_atoms {
 public:
-    Alg_atoms() {
-        maxlen = len = 0;
-        atoms = nullptr;
-    }
     //! Note: the code is possibly more correct and faster without the
     //! following destructor, which will only run after the program takes
     //! a normal exit. Cleaning up after the program exit slows down the exit,
@@ -95,9 +91,9 @@ public:
     //! insert/lookup attribute by name (without prefixed type)
     Alg_attribute insert_string(const char *name);
 private:
-    long maxlen;
-    long len;
-    Alg_attribute *atoms;
+    long maxlen = 0;
+    long len = 0;
+    Alg_attribute *atoms = nullptr;
 
     //! Insert an Attribute not in table after moving attr to heap
     Alg_attribute insert_new(const char *name, char attr_type);
@@ -148,11 +144,7 @@ public:
     class Alg_parameters *next;
     Alg_parameter parm;
 
-    Alg_parameters(Alg_parameters *list) {
-        next = list;
-    }
-
-    //~Alg_parameters() { }
+    Alg_parameters(Alg_parameters *list) : next{list} {}
 
     //! each of these routines takes address of pointer to the list
     //! insertion is performed without checking whether or not a
@@ -360,11 +352,11 @@ public:
 //! A sequence of Alg_event objects
 class Alg_events {
 private:
-    long maxlen;
+    long maxlen = 0;
     void expand();
 protected:
-    long len;
-    Alg_event **events; //!< events is array of pointers
+    long len = 0;
+    Alg_event **events = nullptr; //!< Array of pointers
 public:
     //! sometimes, it is nice to have the time of the last note-off.
     //! In the current implementation,
@@ -372,20 +364,14 @@ public:
     //! last note-off in the current unit, so it should be correct after
     //! creating a new track and adding notes to it. It is *not*
     //! updated after uninsert(), so use it with care.
-    double last_note_off;
+    double last_note_off = 0.0;
     //! initially false, in_use can be used to mark "do not delete". If an
     //! Alg_events instance is deleted while "in_use", an assertion will fail.
-    bool in_use;
+    bool in_use = false;
     virtual int length() { return len; }
     virtual Alg_event *&operator[](int i) {
         assert(i >= 0 && i < len);
         return events[i];
-    }
-    Alg_events() {
-        maxlen = len = 0;
-        events = nullptr;
-        last_note_off = 0;
-        in_use = false;
     }
     //! destructor deletes the events array, but not the
     //! events themselves
@@ -409,7 +395,7 @@ protected:
 
     //! If this is an Alg_event_list, the events are owned by an
     //! Alg_track or an Alg_seq
-    Alg_track *events_owner;
+    Alg_track *events_owner = nullptr;
 
     static int sequences;  //!< to keep track of sequence numbers
 
@@ -420,15 +406,15 @@ protected:
     //! the events_owner's sequence_number. If the events_owner is
     //! edited, the pointers in this Alg_event_list will become invalid.
     //! This is detected (for debugging) as differing sequence_numbers.
-    int sequence_number;
+    int sequence_number = 0;
 
     //! every event list, track, and seq has a duration.
     //! Usually the duration is set when the list is constructed, e.g.
     //! when you extract from 10 to 15 seconds, the duration is 5 secs.
     //! The duration does not tell you when is the last note-off.
     //! duration is recorded in both beats and seconds:
-    double beat_dur;
-    double real_dur;
+    double beat_dur = 0.0;
+    double real_dur = 0.0;
 public:
     //! the client should not create one of these, but these are
     //! returned from various track and seq operations. An
@@ -438,8 +424,7 @@ public:
     //! When applied to an Alg_seq, events are enumerated track
     //! by track with increasing indices. This operation is not
     //! particularly fast on an Alg_seq.
-    Alg_event_list() { sequence_number = 0;
-        beat_dur = 0.0; real_dur = 0.0; events_owner = nullptr; type = 'e'; }
+    Alg_event_list() { type = 'e'; }
     Alg_event_list(Alg_track *owner);
 
     char get_type() { return type; }
@@ -482,8 +467,7 @@ public:
 //! Used to contruct a tempo map
 class Alg_beat {
 public:
-    Alg_beat(double t, double b) {
-        time = t; beat = b; }
+    Alg_beat(double t, double b) : time{t}, beat{b} {}
     Alg_beat() = default;
     double time;
     double beat;
@@ -493,19 +477,19 @@ public:
 //! A list of \ref Alg_beat objects used in \ref Alg_seq
 class Alg_beats {
 private:
-    long maxlen;
+    // Default value of 6 is what would normally be produced by calling
+    // expand() with a maxlen of 0, which is what was previously done in
+    // the constructor.
+    long maxlen = 6;
     void expand();
 public:
-    long len;
+    long len = 0;
     Alg_beat *beats;
     Alg_beat &operator[](int i) {
         assert(i >= 0 && i < len);
         return beats[i];
     }
-    Alg_beats() {
-        maxlen = len = 0;
-        beats = nullptr;
-        expand();
+    Alg_beats() : beats{new Alg_beat[maxlen]} {
         beats[0].time = 0;
         beats[0].beat = 0;
         len = 1;
@@ -517,18 +501,14 @@ public:
 
 class Alg_time_map {
 private:
-    int refcount;
+    int refcount = 0;
 public:
     Alg_beats beats; //!< array of Alg_beat
-    double last_tempo;
-    bool last_tempo_flag;
-    Alg_time_map() {
-        //! This value ignored until last_tempo_flag is set;
-        //! nevertheless, the default tempo is 100.
-        last_tempo = ALG_DEFAULT_BPM / 60.0;
-        last_tempo_flag = true;
-        refcount = 0;
-    }
+    //! This value ignored until last_tempo_flag is set;
+    //! nevertheless, the default tempo is 100.
+    double last_tempo = ALG_DEFAULT_BPM / 60.0;
+    bool last_tempo_flag = true;
+    Alg_time_map() = default;
     Alg_time_map(Alg_time_map *map); //!< copy constructor
     long length() { return beats.len; }
     void show();
@@ -577,15 +557,10 @@ public:
 //! and Serial_write_buffer
 class Serial_buffer {
   protected:
-    char *buffer;
-    char *ptr;
-    long len;
+    char *buffer = nullptr;
+    char *ptr = nullptr;
+    long len = 0;
   public:
-    Serial_buffer() {
-        buffer = nullptr;
-        ptr = nullptr;
-        len = 0;
-    }
     virtual ~Serial_buffer() = default;
 
     long get_posn() { return static_cast<long>(ptr - buffer); }
@@ -696,8 +671,8 @@ class Alg_seq;
 
 class Alg_track : public Alg_event_list {
 protected:
-    Alg_time_map *time_map;
-    bool units_are_seconds;
+    Alg_time_map *time_map = nullptr;
+    bool units_are_seconds = false;
     char *get_string(char **p, long *b);
     long get_int32(char **p, long *b);
     double get_double(char **p, long *b);
@@ -711,8 +686,10 @@ protected:
 public:
     void serialize_track();
     void unserialize_track();
-    Alg_track() { units_are_seconds = false; time_map = nullptr;
-                  set_time_map(nullptr); type = 't'; }
+    Alg_track() {
+        set_time_map(nullptr);
+        type = 't';
+    }
     //! initialize empty track with a time map
     Alg_track(Alg_time_map *map, bool seconds);
 
@@ -879,15 +856,11 @@ public:
 //! floating point values, e.g. 4.5 beats per measure
 class Alg_time_sig {
 public:
-    double beat; //!< when does this take effect?
-    double num;  //!< what is the "numerator" (top number?)
-    double den;  //!< what is the "denominator" (bottom number?)
-    Alg_time_sig(double b, double n, double d) {
-        beat = b; num = n; den = d;
-    }
-    Alg_time_sig() {
-        beat = 0; num = 0; den = 0;
-    }
+    double beat = 0; //!< when does this take effect?
+    double num = 0;  //!< what is the "numerator" (top number?)
+    double den = 0;  //!< what is the "denominator" (bottom number?)
+    Alg_time_sig() = default;
+    Alg_time_sig(double b, double n, double d) : beat{b}, num{n}, den{d} {}
     void beat_to_measure(double beat, double *measure, double *m_beat,
                          double *num, double *den);
 
@@ -907,15 +880,11 @@ public:
 //! until the next time_sig.
 class Alg_time_sigs {
 private:
-    long maxlen;
+    long maxlen = 0;
+    long len = 0;
+    Alg_time_sig *time_sigs = nullptr;
     void expand(); //!< make more space
-    long len;
-    Alg_time_sig *time_sigs;
 public:
-    Alg_time_sigs() {
-        maxlen = len = 0;
-        time_sigs = nullptr;
-    }
     Alg_time_sig &operator[](int i) { //!< fetch a time signature
         assert(i >= 0 && i < len);
         return time_sigs[i];
@@ -939,21 +908,17 @@ public:
 //! A sequence of Alg_events objects
 class Alg_tracks {
 private:
-    long maxlen;
+    long maxlen = 0;
+    long len = 0;
     void expand();
     void expand_to(int new_max);
-    long len;
 public:
-    Alg_track **tracks; //!< tracks is array of pointers
+    Alg_track **tracks = nullptr; //!< tracks is array of pointers
     Alg_track &operator[](int i) {
         assert(i >= 0 && i < len);
         return *tracks[i];
     }
     long length() { return len; }
-    Alg_tracks() {
-        maxlen = len = 0;
-        tracks = nullptr;
-    }
     ~Alg_tracks();
     //! Append a track to tracks. This Alg_tracks becomes the owner of track.
     void append(Alg_track *track);
@@ -990,17 +955,17 @@ struct Alg_pending_event {
 
 class Alg_iterator {
 private:
-    long maxlen;
-    void expand();
-    void expand_to(int new_max);
-    long len;
+    long maxlen = 0;
+    long len = 0;
     Alg_seq *seq;
-    Alg_pending_event *pending_events;
+    Alg_pending_event *pending_events = nullptr;
     //! the next four fields are mainly for request_note_off()
     Alg_events *events_ptr; //!< remembers events containing current event
     long index; //!< remembers index of current event
     void *cookie; //!< remembers the cookie associated with next event
     double offset;
+    void expand();
+    void expand_to(int new_max);
     void show();
 
     //! \brief Check if event \p i is earlier than event \p j
@@ -1017,12 +982,7 @@ public:
     //! well as note-on and update events
     bool note_off_flag;
     long length() { return len; }
-    Alg_iterator(Alg_seq *s, bool note_off) {
-        seq = s;
-        note_off_flag = note_off;
-        maxlen = len = 0;
-        pending_events = nullptr;
-    }
+    Alg_iterator(Alg_seq *s, bool note_off) : seq{s}, note_off_flag{note_off} {}
     //! Normally, iteration is over the events in the one sequence used
     //! to instatiate the iterator (see above), but with this method, you
     //! can add more sequences to the iteration. Events are returned in
