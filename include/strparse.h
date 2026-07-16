@@ -1,5 +1,7 @@
 //! \file strparse.h Header for String_parse class
 
+#include <string>
+
 class String_parse {
 public:
     int pos;
