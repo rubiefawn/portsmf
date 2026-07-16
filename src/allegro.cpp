@@ -269,14 +269,14 @@ void Alg_event::set_parameter(Alg_parameter *new_parameter)
 {
     Alg_parameter *parm;
     if (is_note()) {
-        auto *note = (Alg_note*) this;
+        auto *note = static_cast<Alg_note*>(this);
         parm = note->parameters->find(new_parameter->attr);
         if (!parm) {
             note->parameters = new Alg_parameters(note->parameters);
             parm = &(note->parameters->parm);
         }
     } else { // update
-        auto *update = (Alg_update*) this;
+        auto *update = static_cast<Alg_update*>(this);
         parm = &(update->parameter);
     }
     parm->copy(new_parameter); // copy entire parameter
@@ -354,7 +354,7 @@ void Alg_event::set_atom_value(const char *a, const char *value)
 float Alg_event::get_pitch()
 {
     assert(is_note());
-    auto* note = (Alg_note *) this;
+    auto* note = static_cast<Alg_note*>(this);
     return note->pitch;
 }
 
@@ -362,7 +362,7 @@ float Alg_event::get_pitch()
 float Alg_event::get_loud()
 {
     assert(is_note());
-    auto* note = (Alg_note *) this;
+    auto* note = static_cast<Alg_note*>(this);
     return note->loud;
 }
 
@@ -370,7 +370,7 @@ float Alg_event::get_loud()
 double Alg_event::get_start_time()
 {
     assert(is_note());
-    auto* note = (Alg_note *) this;
+    auto* note = static_cast<Alg_note*>(this);
     return note->time;
 }
 
@@ -378,7 +378,7 @@ double Alg_event::get_start_time()
 double Alg_event::get_end_time()
 {
     assert(is_note());
-    auto* note = (Alg_note *) this;
+    auto* note = static_cast<Alg_note*>(this);
     return note->time + note->dur;
 }
 
@@ -386,7 +386,7 @@ double Alg_event::get_end_time()
 double Alg_event::get_duration()
 {
     assert(is_note());
-    auto* note = (Alg_note *) this;
+    auto* note = static_cast<Alg_note*>(this);
     return note->dur;
 }
 
@@ -394,14 +394,14 @@ double Alg_event::get_duration()
 void Alg_event::set_pitch(float p)
 {
     assert(is_note());
-    auto* note = (Alg_note *) this;
+    auto* note = static_cast<Alg_note*>(this);
     note->pitch = p;
 }
 
 void Alg_event::set_loud(float l)
 {
     assert(is_note());
-    auto *note = (Alg_note *) this;
+    auto *note = static_cast<Alg_note*>(this);
     note->loud = l;
 }
 
@@ -409,7 +409,7 @@ void Alg_event::set_loud(float l)
 void Alg_event::set_duration(double d)
 {
     assert(is_note());
-    auto* note = (Alg_note *) this;
+    auto* note = static_cast<Alg_note*>(this);
     note->dur = d;
 }
 
@@ -418,7 +418,7 @@ bool Alg_event::has_attribute(const char *a)
 {
     assert(is_note());
     assert(a); // must be non-null
-    auto* note = (Alg_note *) this;
+    auto* note = static_cast<Alg_note*>(this);
     Alg_attribute attr = symbol_table.insert_string(a);
     Alg_parameter *parm = note->parameters->find(attr);
     return parm != nullptr;
@@ -437,7 +437,7 @@ const char *Alg_event::get_string_value(const char *a, const char *value)
 {
     assert(is_note());
     assert(a); // must be non-null
-    auto* note = (Alg_note *) this;
+    auto* note = static_cast<Alg_note*>(this);
     Alg_attribute attr = symbol_table.insert_string(a);
     assert(a[0] == 's'); // must be of type string
     Alg_parameter *parm = note->parameters->find(attr);
@@ -452,7 +452,7 @@ double Alg_event::get_real_value(const char *a, double value)
 {
     assert(is_note());
     assert(a);
-    auto* note = (Alg_note *) this;
+    auto* note = static_cast<Alg_note*>(this);
     Alg_attribute attr = symbol_table.insert_string(a);
     assert(a[0] == 'r'); // must be of type real
     Alg_parameter *parm = note->parameters->find(attr);
@@ -467,7 +467,7 @@ bool Alg_event::get_logical_value(const char *a, bool value)
 {
     assert(is_note());
     assert(a);
-    auto* note = (Alg_note *) this;
+    auto* note = static_cast<Alg_note*>(this);
     Alg_attribute attr = symbol_table.insert_string(a);
     assert(a[0] == 'l'); // must be of type logical
     Alg_parameter *parm = note->parameters->find(attr);
@@ -482,7 +482,7 @@ long Alg_event::get_integer_value(const char *a, int32_t value)
 {
     assert(is_note());
     assert(a);
-    auto* note = (Alg_note *) this;
+    auto* note = static_cast<Alg_note*>(this);
     Alg_attribute attr = symbol_table.insert_string(a);
     assert(a[0] == 'i'); // must be of type integer
     Alg_parameter *parm = note->parameters->find(attr);
@@ -497,7 +497,7 @@ const char *Alg_event::get_atom_value(const char *a, const char *value)
 {
     assert(is_note());
     assert(a);
-    auto* note = (Alg_note *) this;
+    auto* note = static_cast<Alg_note*>(this);
     Alg_attribute attr = symbol_table.insert_string(a);
     assert(a[0] == 'a'); // must be of type atom
     Alg_parameter *parm = note->parameters->find(attr);
@@ -514,7 +514,7 @@ const char *Alg_event::get_atom_value(const char *a, const char *value)
 void Alg_event::delete_attribute(const char *a)
 {
     assert(is_note());
-    auto* note = (Alg_note *) this;
+    auto* note = static_cast<Alg_note*>(this);
     Alg_parameters::remove_key(&(note->parameters), a);
 }
 
@@ -523,7 +523,7 @@ const char *Alg_event::get_attribute()
 // Note: this returns a string, not an Alg_attribute
 {
     assert(is_update());
-    auto* update = (Alg_update *) this;
+    auto* update = static_cast<Alg_update*>(this);
     return update->parameter.attr_name();
 }
 
@@ -531,7 +531,7 @@ const char *Alg_event::get_attribute()
 char Alg_event::get_update_type()
 {
     assert(is_update());
-    auto* update = (Alg_update *) this;
+    auto* update = static_cast<Alg_update*>(this);
     return update->parameter.attr_type();
 }
 
@@ -539,7 +539,7 @@ char Alg_event::get_update_type()
 const char *Alg_event::get_string_value()
 {
     assert(is_update());
-    auto* update = (Alg_update *) this;
+    auto* update = static_cast<Alg_update*>(this);
     assert(get_update_type() == 's');
     return update->parameter.s;
 }
@@ -548,7 +548,7 @@ const char *Alg_event::get_string_value()
 double Alg_event::get_real_value()
 {
     assert(is_update());
-    auto* update = (Alg_update *) this;
+    auto* update = static_cast<Alg_update*>(this);
     assert(get_update_type() == 'r');
     return update->parameter.r;
 }
@@ -557,7 +557,7 @@ double Alg_event::get_real_value()
 bool Alg_event::get_logical_value()
 {
     assert(is_update());
-    auto* update = (Alg_update *) this;
+    auto* update = static_cast<Alg_update*>(this);
     assert(get_update_type() == 'l');
     return update->parameter.l;
 }
@@ -566,7 +566,7 @@ bool Alg_event::get_logical_value()
 int32_t Alg_event::get_integer_value()
 {
     assert(is_update());
-    auto* update = (Alg_update *) this;
+    auto* update = static_cast<Alg_update*>(this);
     assert(get_update_type() == 'i');
     return update->parameter.i;
 }
@@ -575,7 +575,7 @@ int32_t Alg_event::get_integer_value()
 const char *Alg_event::get_atom_value()
 {
     assert(is_update());
-    auto* update = (Alg_update *) this;
+    auto* update = static_cast<Alg_update*>(this);
     assert(get_update_type() == 'a');
     return update->parameter.a;
 }
@@ -588,7 +588,7 @@ bool Alg_event::overlap(double t, double len, bool all)
         return true;
     }
     if (all && is_note()) {
-        double dur = ((Alg_note*) this)->dur;
+        double dur = static_cast<Alg_note*>(this)->dur;
         // note overlaps with region
         if (time < t && time + dur - ALG_EPS > t) {
             return true;
@@ -711,7 +711,7 @@ void Alg_events::append(Alg_event *event)
     events[len++] = event;
     // keep track of last note_off time
     if (event->is_note()) {
-        auto *note = (Alg_note*) event;
+        auto *note = static_cast<Alg_note*>(event);
         double note_off = note->time + note->dur;
         last_note_off = std::max(note_off, last_note_off);
     }
@@ -757,7 +757,7 @@ void Alg_event_list::set_start_time(Alg_event *event, double t)
         return;
     } else if (type == 't') { // this is an Alg_track
         // find the event in the track
-        track_ptr = (Alg_track*) this;
+        track_ptr = static_cast<Alg_track*>(this);
         // this should be a binary search since events are in time order
         // probably there should be member function to do the search
         for (index = 0; index < length(); index++) {
@@ -766,7 +766,7 @@ void Alg_event_list::set_start_time(Alg_event *event, double t)
             }
         }
     } else { // type == 's', an Alg_seq
-        auto *seq = (Alg_seq*) this;
+        auto *seq = static_cast<Alg_seq*>(this);
         for (int i = 0; i < seq->tracks(); i++) {
             track_ptr = seq->track(i);
             // if you implemented binary search, you could call it
@@ -1291,9 +1291,9 @@ Alg_event *Alg_track::copy_event(Alg_event *event)
 {
     Alg_event *new_event;
     if (event->is_note()) {
-        new_event = new Alg_note((Alg_note*) event);
+        new_event = new Alg_note(static_cast<Alg_note*>(event));
     } else { // update
-        new_event = new Alg_update((Alg_update*) event);
+        new_event = new Alg_update(static_cast<Alg_update*>(event));
     }
     return new_event;
 }
@@ -1492,7 +1492,7 @@ void Alg_track::serialize_track()
         ser_write_buf.set_double(event->time);
         if (event->is_note()) {
             ser_write_buf.check_buffer(20);
-            auto *note = (Alg_note *) event;
+            auto *note = static_cast<Alg_note*>(event);
             ser_write_buf.set_float(note->pitch);
             ser_write_buf.set_float(note->loud);
             ser_write_buf.set_double(note->dur);
@@ -1508,7 +1508,7 @@ void Alg_track::serialize_track()
             ser_write_buf.store_int32(parm_num_offset, parm_num);
         } else {
             assert(event->is_update());
-            auto *update = (Alg_update *) event;
+            auto *update = static_cast<Alg_update*>(event);
             serialize_parameter(&(update->parameter));
         }
         ser_write_buf.check_buffer(7); // maximum padding possible
@@ -1580,6 +1580,15 @@ Alg_track *Alg_track::unserialize(void *buffer, long len)
         return track;
     }
 }
+
+
+
+Alg_seq *Alg_track::to_alg_seq() {
+    // TODO: This whole function can be replaced with
+    // dynamic_cast<Alg_seq*>(). It should probably be deprecated
+    return get_type() == 's' ? static_cast<Alg_seq*>(this) : nullptr;
+}
+
 
 
 #if defined(_WIN32)
@@ -1752,7 +1761,7 @@ void Alg_track::convert_to_beats()
             Alg_event *e = events[i];
             double beat = time_map->time_to_beat(e->time);
             if (e->is_note()) {
-                auto *n = (Alg_note*) e;
+                auto *n = static_cast<Alg_note*>(e);
                 n->dur = time_map->time_to_beat(n->time + n->dur) - beat;
             }
             e->time = beat;
@@ -1772,7 +1781,7 @@ void Alg_track::convert_to_seconds()
             Alg_event *e = events[i];
             double time = time_map->beat_to_time(e->time);
             if (e->is_note()) {
-                auto *n = (Alg_note*) e;
+                auto *n = static_cast<Alg_note*>(e);
                 n->dur = time_map->beat_to_time(n->time + n->dur) - time;
             }
             e->time = time;
@@ -1895,7 +1904,7 @@ void Alg_track::paste(double t, Alg_event_list *seq)
     if (seq->get_type() == 'e') {
         assert(seq->get_owner()->get_units_are_seconds() == units_are_seconds);
     } else { // make it match
-        auto *tr = (Alg_track*) seq;
+        auto *tr = static_cast<Alg_track*>(seq);
         prev_units_are_seconds = tr->get_units_are_seconds();
         if (units_are_seconds) { tr->convert_to_seconds(); }
         else { tr->convert_to_beats(); }
@@ -1925,7 +1934,7 @@ void Alg_track::paste(double t, Alg_event_list *seq)
     }
     // restore track units to what they were before
     if (seq->get_type() != 'e') {
-        auto *tr = (Alg_track*) seq;
+        auto *tr = static_cast<Alg_track*>(seq);
         if (prev_units_are_seconds) {
             tr->convert_to_seconds();
         } else {
@@ -1942,9 +1951,9 @@ void Alg_track::merge(double t, Alg_event_list *seq)
     for (int i = 0; i < s.length(); i++) {
         Alg_event *new_event;
         if (s[i]->is_note()) {
-            new_event = new Alg_note((Alg_note*) s[i]);
+            new_event = new Alg_note(static_cast<Alg_note*>(s[i]));
         } else {
-            new_event = new Alg_update((Alg_update*) s[i]);
+            new_event = new Alg_update(static_cast<Alg_update*>(s[i]));
         }
         new_event->time += t;
         insert(new_event);
@@ -3225,7 +3234,7 @@ void Alg_seq::merge(double t, Alg_event_list *seq)
 {
     // seq must be an Alg_seq:
     assert(seq->get_type() == 's');
-    auto *s = (Alg_seq*) seq;
+    auto *s = static_cast<Alg_seq*>(seq);
     for (int i = 0; i < s->tracks(); i++) {
         if (tracks() <= i) {
             add_track(i);

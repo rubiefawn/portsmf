@@ -67,7 +67,7 @@ Alg_event *Alg_seq::write_track_name(std::ostream &file, int n,
             break;
         }
         if (ue->is_update()) {
-            auto *u = (Alg_update*) ue;
+            auto *u = static_cast<Alg_update*>(ue);
             if (u->parameter.attr == attr) {
                 file << " " << u->parameter.s;
                 e = ue; // return the update event we found
@@ -157,7 +157,7 @@ void Alg_seq::write(std::ostream &file, bool in_secs, double offset)
             }
             // write the note or update data
             if (e->is_note()) {
-                auto *n = (Alg_note*) e;
+                auto *n = static_cast<Alg_note*>(e);
                 double dur = n->dur;
                 file << " K" << n->get_identifier() <<
                         " P" << GFMT << n->pitch;
@@ -174,7 +174,7 @@ void Alg_seq::write(std::ostream &file, bool in_secs, double offset)
                 }
             } else { // an update
                 assert(e->is_update());
-                auto *u = (Alg_update*) e;
+                auto *u = static_cast<Alg_update*>(e);
                 if (u->get_identifier() != -1) {
                     file << " K" << u->get_identifier();
                 }

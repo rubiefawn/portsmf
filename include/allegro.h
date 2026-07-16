@@ -744,8 +744,7 @@ public:
 
     //! If the track is really an Alg_seq and you need to access an
     //! Alg_seq method, coerce to an Alg_seq with this function:
-    Alg_seq *to_alg_seq() {
-        return (get_type() == 's' ? (Alg_seq*) this : nullptr); }
+    Alg_seq *to_alg_seq();
 
     //! Are we using beats or seconds?
     bool get_units_are_seconds() { return units_are_seconds; }
