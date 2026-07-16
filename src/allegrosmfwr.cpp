@@ -503,7 +503,7 @@ void Alg_smf_write::write_tempo(int divs, int tempo)
     out_file->put('\xFF');
     out_file->put('\x51');
     out_file->put('\x03');
-    write_24bit(static_cast<int>(tempo));
+    write_24bit(tempo);
 }
 
 
