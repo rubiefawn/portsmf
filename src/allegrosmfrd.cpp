@@ -83,7 +83,7 @@ protected:
     void Mf_pitchbend(int chan, int c1, int c2) override;
     void Mf_program(int chan, int program) override;
     void Mf_chanpressure(int chan, int val) override;
-    void binary_msg(int len, unsigned char *msg, const char *attr_string);
+    void binary_msg(int len, const unsigned char *msg, const char *attr_string);
     void Mf_sysex(int len, unsigned char *msg) override;
     void Mf_arbitrary(int len, unsigned char *msg) override;
     void Mf_metamisc(int type, int len, unsigned char *msg) override;
@@ -320,9 +320,11 @@ void Alg_midifile_reader::Mf_chanpressure(int chan, int val)
 }
 
 
-void Alg_midifile_reader::binary_msg(int len, unsigned char *msg,
-                                     const char *attr_string)
-{
+void Alg_midifile_reader::binary_msg(
+    int len,
+    const unsigned char *msg,
+    const char *attr_string
+) {
     Alg_parameter parameter;
     char *hexstr = new char[len * 2 + 1];
     for (int i = 0; i < len; i++) {
