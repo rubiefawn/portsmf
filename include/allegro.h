@@ -1005,7 +1005,10 @@ private:
     void *cookie; //!< remembers the cookie associated with next event
     double offset;
     void show();
+
+    //! \brief Check if event \p i is earlier than event \p j
     bool earlier(int i, int j);
+
     void insert(Alg_events *events, long index, bool note_on,
                 void *cookie, double offset);
     //! returns the info on the next pending event in the priority queue

@@ -2750,7 +2750,6 @@ void Alg_iterator::show()
 
 
 bool Alg_iterator::earlier(int i, int j)
-// see if event i is earlier than event j
 {
     // note-offs are scheduled ALG_EPS early so that if a note-off is
     // followed immediately with the same timestamp by a note-on (common
@@ -2761,10 +2760,7 @@ bool Alg_iterator::earlier(int i, int j)
 
     // not sure if this case really exists or this is the best rule,
     // but we want to give precedence to note-off events
-    if (t_i < t_j || (t_i == t_j && pending_events[j].note_on)) {
-        return true;
-    }
-    return false;
+    return t_i < t_j || (t_i == t_j && pending_events[j].note_on);
 }
 
 
