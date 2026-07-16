@@ -476,5 +476,5 @@ Alg_error alg_smf_read(std::istream &file, Alg_seq *new_seq)
     bool err = ar.parse();
     ar.seq->set_real_dur(ar.seq->get_time_map()->
                          beat_to_time(ar.seq->get_beat_dur()));
-    return (err ? alg_error_syntax : alg_no_error);
+    return err ? alg_error_syntax : alg_no_error;
 }

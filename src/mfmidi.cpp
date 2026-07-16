@@ -82,7 +82,7 @@ int Midifile_reader::readmt(const char *s, int skip)
 #pragma warning(default: 4996) // turn it back on
 #endif
     mferror(buff);
-    return(0);
+    return 0;
 }
 
 int Midifile_reader::egetc()

@@ -205,10 +205,10 @@ public:
     virtual void show() = 0;
 
     //! Check whether an Alg_event is a note
-    bool is_note() { return (type == 'n'); }
+    bool is_note() { return type == 'n'; }
 
     //! Check whether an Alg_event is a parameter update
-    bool is_update() { return (type == 'u'); }
+    bool is_update() { return type == 'u'; }
 
     //! \returns 'n' for note, 'u' for update
     char get_type() { return type; }
@@ -755,7 +755,7 @@ public:
     virtual void convert_to_beats();
     virtual void convert_to_seconds();
     void set_dur(double dur);
-    double get_dur() { return (units_are_seconds ? real_dur : beat_dur); }
+    double get_dur() { return units_are_seconds ? real_dur : beat_dur; }
 
     //! Every Alg_track may have an associated time_map. If no map is
     //! specified, or if you set_time_map(nullptr), then the behavior

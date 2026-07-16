@@ -85,7 +85,7 @@ Alg_error alg_read(std::istream &file, Alg_seq *new_seq, double *offset_ptr)
     if (!err && offset_ptr) {
         *offset_ptr = alg_reader.offset;
     }
-    return (err ? alg_error_syntax : alg_no_error);
+    return err ? alg_error_syntax : alg_no_error;
 }
 
 

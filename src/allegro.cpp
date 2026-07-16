@@ -502,13 +502,11 @@ const char *Alg_event::get_atom_value(const char *a, const char *value)
     Alg_attribute attr = symbol_table.insert_string(a);
     assert(a[0] == 'a'); // must be of type atom
     Alg_parameter *parm = note->parameters->find(attr);
-    if (parm) {
-        return parm->a;
-    }
+    if (parm) { return parm->a; }
     // if default is a string, convert to an atom (unique
     // string in symbol table) and return it
-    return (value == nullptr ? nullptr :
-              symbol_table.insert_string(value));
+    if (!value) { return nullptr; }
+    return symbol_table.insert_string(value);
 }
 
 
@@ -2040,8 +2038,8 @@ Alg_event_list *Alg_track::find(double t, double len, bool all,
             if ((channel_mask == 0 ||
                  (event->chan < 32 &&
                   (channel_mask & (1 << event->chan)))) &&
-                ((event_type_mask == 0 ||
-                  (event_type_mask & (1 << event->get_type_code()))))) {
+                (event_type_mask == 0 ||
+                  (event_type_mask & (1 << event->get_type_code())))) {
                 list->append(event);
             }
         }
