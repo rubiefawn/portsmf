@@ -8,14 +8,18 @@
 #include "strparse.h"
 #include "allegro.h"
 
-// Note about precision: %g prints 6 significant digits. For 1ms precision,
-// the maximum magnitude is 999.999, i.e. 1000s < 17minutes. For anything
-// over 1000s, time in seconds will be printed with 10ms precision, which
-// is not good. Therefore, times and durations are printed as %.4d, which
-// gives 100us precision.
-// The following define allows you to change this decision:
-/* #define TIMFMT "%.4d" */
+//! \def TIMPREC
+//! \brief The number of significant digits to output for time values.
+//!
+//! You may override this by defining `TIMPREC` when invoking CMake,
+//! replacing `N` with your desired number of significant digits:
+//!
+//! ```
+//! cmake -Bbuild -DCMAKE_CXX_FLAGS='-DTIMPREC=N'
+//! ```
+#ifndef TIMPREC
 #define TIMPREC 4
+#endif
 #define TIMFMT std::fixed << std::setprecision(TIMPREC)
 #define GFMT std::resetiosflags(std::ios::floatfield) << std::setprecision(6)
 

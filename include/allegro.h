@@ -169,18 +169,24 @@ public:
 };
 
 
-// these are type codes associated with certain attributes
-// see Alg_track::find() where these are bit positions in event_type_mask
-#define ALG_NOTE 0 //!< This is a note, not an update
-#define ALG_GATE 1 //!< "gate"
-#define ALG_BEND 2 //!< "bend"
-#define ALG_CONTROL 3 //!< "control"
-#define ALG_PROGRAM 4 //!< "program"
-#define ALG_PRESSURE 5 //!< "pressure"
-#define ALG_KEYSIG 6 //!< "keysig"
-#define ALG_TIMESIG_NUM 7 //!< "timesig_num"
-#define ALG_TIMESIG_DEN 8 //!< "timesig_den"
-#define ALG_OTHER 9 //!< any other value
+//! \brief Type codes associated with certain attributes
+//!
+//! See \ref Alg_track::find() where these are bit positions in
+//! `event_type_mask`
+//! \todo Make \ref Alg_type_code an `enum class`
+enum Alg_type_code {
+    ALG_NOTE = 0, //!< This is a note, not an update
+    ALG_GATE = 1, //!< "gate"
+    ALG_BEND = 2, //!< "bend"
+    ALG_CONTROL = 3, //!< "control"
+    ALG_PROGRAM = 4, //!< "program"
+    ALG_PRESSURE = 5, //!< "pressure"
+    ALG_KEYSIG = 6, //!< "keysig"
+    ALG_TIMESIG_NUM = 7, //!< "timesig_num"
+    ALG_TIMESIG_DEN = 8, //!< "timesig_den"
+    ALG_OTHER = 9, //!< any other value
+};
+
 
 //! Abstract superclass of Alg_note and Alg_update
 // NOTE: there is no Alg_event() constructor because Alg_event is an

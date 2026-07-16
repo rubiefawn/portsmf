@@ -1,16 +1,18 @@
 #include <cstddef>
 
-#define NOTEOFF 0x80
-#define NOTEON 0x90
-#define PRESSURE 0xa0
-#define CONTROLLER 0xb0
-#define PITCHBEND 0xe0
-#define PROGRAM 0xc0
-#define CHANPRESSURE 0xd0
+enum Alg_midi_msg_type {
+    NOTEOFF = 0x80,
+    NOTEON = 0x90,
+    PRESSURE = 0xa0,
+    CONTROLLER = 0xb0,
+    PITCHBEND = 0xe0,
+    PROGRAM = 0xc0,
+    CHANPRESSURE = 0xd0,
+};
 
-/* These are the strings used in keynote to identify Standard MIDI File */
-/* meta text messages. */
-
+//! These are the strings used in keynote to identify Standard MIDI File
+//! meta text messages.
+// FIXME: These are unused. Should they be removed?
 #define METATEXT                "Text Event"
 #define METACOPYRIGHT           "Copyright Notice"
 #define METASEQUENCE            "Sequence/Track Name"
@@ -20,20 +22,21 @@
 #define METACUE                 "Cue Point"
 #define METAUNRECOGNIZED        "Unrecognized"
 
-
+//! \todo Rather than \ref finalize(), we should have ~Midifile_reader(),
+//! but at least VC++ complains that there is no Mf_free(), even
+//! though Mf_free is declared as virtual and this is an abstract
+//! class. I don't understand this, so finalize() is a workaround. -RBD
 class Midifile_reader {
 public:
     void midifile();
     int Mf_nomerge = 0; //!< 1 => continue'ed system exclusives are not collapsed.
     long Mf_currtime = 0; //!< current time in delta-time units
     int Mf_skipinit = 0;   //!< 1 if initial garbage should be skipped
-	//! call finalize() when done or you may leak memory.
-	void finalize();  /* clean up before deletion */
-	//! \class Midifile_reader
-	//! Note: rather than finalize, we should have ~Midifile_reader(),
-	//! but at least VC++ complains that there is no Mf_free(), even
-	//! though Mf_free is declared as virtual and this is an abstract
-	//! class. I don't understand this, so finalize() is a workaround. -RBD
+
+    //! \brief Clean up before deletion
+    //!
+    //! Call this method when done or you may leak memory.
+    void finalize();
 
 protected:
     int midifile_error = 0;
@@ -70,18 +73,24 @@ protected:
 private:
     long Mf_toberead = 0;
 
+    //! \brief Read a varying-length number, and return the number of
+    //! characters it took.
     long readvarinum();
+
     long read32bit();
     int read16bit();
     void msgenlarge();
     unsigned char *msg();
-    int readheader();
-    void readtrack();
+    int readheader(); //!< Read a header chunk
+    void readtrack(); //!< Read a track chunk
     void sysex();
     void msginit();
-    int egetc();
+    int egetc(); //!< Read a single character and abort on EOF
     int msgleng();
 
+    //! \brief Read through the "MThd" or "MTrk" header string.
+    //!
+    //! If \p skip == 1, attempt to skip initial garbage.
     int readmt(const char *s, int skip);
     long to32bit(int c1, int c2, int c3, int c4);
     int to16bit(int c1, int c2);
