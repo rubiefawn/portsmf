@@ -134,7 +134,7 @@ public:
     //! set attr and store a value in the appropriate union field.
     Alg_parameter() { attr = "i"; }
     ~Alg_parameter();
-    void copy(Alg_parameter *); //!< copy from another parameter
+    void copy(Alg_parameter *parm); //!< copy from another parameter
     char attr_type() { return alg_attr_type(attr); }
     const char *attr_name() { return alg_attr_name(attr); }
     void set_attr(Alg_attribute a) { attr = a; }
@@ -250,9 +250,9 @@ public:
     double get_start_time(); //!< get start time in seconds or beats
     double get_end_time();   //!< get end time in seconds or beats
     double get_duration();   //!< get duration in seconds or beats
-    void set_pitch(float);
-    void set_loud(float);
-    void set_duration(double);
+    void set_pitch(float p);
+    void set_loud(float l);
+    void set_duration(double d);
 
     //! \brief Test if note has attribute/value pair
     //!
@@ -466,7 +466,7 @@ public:
     //! the event. This will mean a logN search of every track in the seq
     //! (but if this turns out to be a problem, we can store each event's
     //! track owner in the Alg_event_list.)
-    virtual void set_start_time(Alg_event *event, double);
+    virtual void set_start_time(Alg_event *event, double t);
     //! get text description of run-time errors detected, clear error
     const char *get_last_error_message() { return last_error_message; }
     //! \class Alg_event_list
@@ -1127,7 +1127,7 @@ public:
 
     //! Return a particular track. This Alg_seq owns the track, so the
     //! caller must not delete the result.
-    Alg_track *track(int);
+    Alg_track *track(int i);
 
     Alg_event *&operator[](int i) override;
 

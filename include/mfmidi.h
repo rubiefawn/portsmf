@@ -1,3 +1,5 @@
+#include <cstddef>
+
 #define NOTEOFF 0x80
 #define NOTEON 0x90
 #define PRESSURE 0xa0
@@ -43,28 +45,28 @@ protected:
     virtual void Mf_starttrack() = 0;
     virtual void Mf_endtrack() = 0;
     virtual int Mf_getc() = 0;
-    virtual void Mf_chanprefix(int) = 0;
-    virtual void Mf_portprefix(int) = 0;
+    virtual void Mf_chanprefix(int chan) = 0;
+    virtual void Mf_portprefix(int p) = 0;
     virtual void Mf_eot() = 0;
-    virtual void Mf_error(const char *) = 0;
-    virtual void Mf_header(int,int,int) = 0;
-    virtual void Mf_on(int,int,int) = 0;
-    virtual void Mf_off(int,int,int) = 0;
-    virtual void Mf_pressure(int,int,int) = 0;
-    virtual void Mf_controller(int,int,int) = 0;
-    virtual void Mf_pitchbend(int,int,int) = 0;
-    virtual void Mf_program(int,int) = 0;
-    virtual void Mf_chanpressure(int,int) = 0;
-    virtual void Mf_sysex(int,unsigned char*) = 0;
-    virtual void Mf_arbitrary(int,unsigned char*) = 0;
-    virtual void Mf_metamisc(int,int,unsigned char*) = 0;
-    virtual void Mf_seqnum(int) = 0;
-    virtual void Mf_smpte(int,int,int,int,int) = 0;
-    virtual void Mf_timesig(int,int,int,int) = 0;
-    virtual void Mf_tempo(int) = 0;
-    virtual void Mf_keysig(int,int) = 0;
-    virtual void Mf_sqspecific(int,unsigned char*) = 0;
-    virtual void Mf_text(int,int,unsigned char*) = 0;
+    virtual void Mf_error(const char *msg) = 0;
+    virtual void Mf_header(int format, int ntrks, int division) = 0;
+    virtual void Mf_on(int chan, int key, int vel) = 0;
+    virtual void Mf_off(int chan, int key, int vel) = 0;
+    virtual void Mf_pressure(int chan, int key, int val) = 0;
+    virtual void Mf_controller(int chan, int control, int val) = 0;
+    virtual void Mf_pitchbend(int chan, int c1, int c2) = 0;
+    virtual void Mf_program(int chan, int program) = 0;
+    virtual void Mf_chanpressure(int chan, int val) = 0;
+    virtual void Mf_sysex(int len, unsigned char *msg) = 0;
+    virtual void Mf_arbitrary(int len, unsigned char *msg) = 0;
+    virtual void Mf_metamisc(int type, int len, unsigned char *msg) = 0;
+    virtual void Mf_seqnum(int n) = 0;
+    virtual void Mf_smpte(int hours, int mins, int secs, int frames, int subframes) = 0;
+    virtual void Mf_timesig(int i1, int i2, int i3, int i4) = 0;
+    virtual void Mf_tempo(int tempo) = 0;
+    virtual void Mf_keysig(int key, int mode) = 0;
+    virtual void Mf_sqspecific(int len, unsigned char *msg) = 0;
+    virtual void Mf_text(int type, int len, unsigned char *msg) = 0;
 
 private:
     long Mf_toberead;
@@ -81,14 +83,14 @@ private:
     int egetc();
     int msgleng();
 
-    int readmt(const char*,int);
-    long to32bit(int,int,int,int);
-    int to16bit(int,int);
-    void mferror(const char *);
-    void badbyte(int);
-    void metaevent(int);
-    void msgadd(int);
-    void chanmessage(int,int,int);
+    int readmt(const char *s, int skip);
+    long to32bit(int c1, int c2, int c3, int c4);
+    int to16bit(int c1, int c2);
+    void mferror(const char *s);
+    void badbyte(int c);
+    void metaevent(int type);
+    void msgadd(int c);
+    void chanmessage(int status, int c1, int c2);
 
     unsigned char *Msgbuff;
     long Msgsize;
