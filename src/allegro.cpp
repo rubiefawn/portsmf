@@ -44,11 +44,10 @@ char *heapify(const char *s)
 
 void Alg_atoms::expand()
 {
-    maxlen = (maxlen + 5);   // extra growth for small sizes
-    maxlen += (maxlen >> 2); // add 25%
+    maxlen += 5; // Extra growth for small sizes
+    maxlen += maxlen >> 2; // Add 25%
     auto *new_atoms = new Alg_attribute[maxlen];
-    // now do copy
-    memcpy(new_atoms, atoms, len * sizeof(Alg_attribute));
+    std::move(atoms, atoms + len, new_atoms);
     delete[] atoms;
     atoms = new_atoms;
 }
@@ -656,11 +655,10 @@ void Alg_update::show()
 
 void Alg_events::expand()
 {
-    maxlen = (maxlen + 5);   // extra growth for small sizes
-    maxlen += (maxlen >> 2); // add 25%
+    maxlen += 5; // Extra growth for small sizes
+    maxlen += maxlen >> 2; // Add 25%
     auto **new_events = new Alg_event*[maxlen];
-    // now do copy
-    memcpy(new_events, events, len * sizeof(Alg_event*));
+    std::move(events, events + len, new_events);
     delete[] events;
     events = new_events;
 }
@@ -785,11 +783,10 @@ void Alg_event_list::set_start_time(Alg_event *event, double t)
 
 void Alg_beats::expand()
 {
-    maxlen = (maxlen + 5);   // extra growth for small sizes
-    maxlen += (maxlen >> 2); // add 25%
+    maxlen += 5; // Extra growth for small sizes
+    maxlen += maxlen >> 2; // Add 25%
     auto *new_beats = new Alg_beat[maxlen];
-    // now do copy
-    memcpy(new_beats, beats, len * sizeof(Alg_beat));
+    std::move(beats, beats + len, new_beats);
     delete[] beats;
     beats = new_beats;
 }
@@ -2047,12 +2044,11 @@ Alg_event_list *Alg_track::find(double t, double len, bool all,
 void Alg_time_sigs::expand()
 {
     assert(maxlen >= len);
-    maxlen = (maxlen + 5);   // extra growth for small sizes
-    maxlen += (maxlen >> 2); // add 25%
+    maxlen += 5; // Extra growth for small sizes
+    maxlen += maxlen >> 2; // Add 25%
     auto *new_time_sigs = new Alg_time_sig[maxlen];
-    // now do copy
-    memcpy(new_time_sigs, time_sigs, len * sizeof(Alg_time_sig));
-   delete[] time_sigs;
+    std::move(time_sigs, time_sigs + len, new_time_sigs);
+    delete[] time_sigs;
     time_sigs = new_time_sigs;
 }
 
@@ -2633,8 +2629,7 @@ void Alg_tracks::expand_to(int new_max)
 {
     maxlen = new_max;
     auto **new_tracks = new Alg_track*[maxlen];
-    // now do copy
-    memcpy(new_tracks, tracks, len * sizeof(Alg_track*));
+    std::move(tracks, tracks + len, new_tracks);
     delete[] tracks;
     tracks = new_tracks;
 }
@@ -2642,8 +2637,8 @@ void Alg_tracks::expand_to(int new_max)
 
 void Alg_tracks::expand()
 {
-    maxlen = (maxlen + 5);   // extra growth for small sizes
-    maxlen += (maxlen >> 2); // add 25%
+    maxlen += 5; // Extra growth for small sizes
+    maxlen += maxlen >> 2; // Add 25%
     expand_to(maxlen);
 }
 
@@ -2713,9 +2708,7 @@ void Alg_iterator::expand_to(int new_max)
 {
     maxlen = new_max;
     auto *new_pending_events = new Alg_pending_event[maxlen];
-    // now do copy
-    memcpy(new_pending_events, pending_events,
-           len * sizeof(Alg_pending_event));
+    std::move(pending_events, pending_events + len, new_pending_events);
     delete[] pending_events;
     pending_events = new_pending_events;
 }
@@ -2723,8 +2716,8 @@ void Alg_iterator::expand_to(int new_max)
 
 void Alg_iterator::expand()
 {
-    maxlen = (maxlen + 5);   // extra growth for small sizes
-    maxlen += (maxlen >> 2); // add 25%
+    maxlen += 5; // Extra growth for small sizes
+    maxlen += maxlen >> 2; // Add 25%
     expand_to(maxlen);
 }
 
