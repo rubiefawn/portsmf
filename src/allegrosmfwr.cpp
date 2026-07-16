@@ -10,6 +10,16 @@
 #include <iostream>
 #include "allegro.h"
 
+namespace {
+    char hex_to_nibble(char c) {
+        return isalpha(c) ? 10 + (toupper(c) - 'A') : c - '0';
+    }
+
+    char hex_to_char(const char *s) {
+        return (hex_to_nibble(s[0]) << 4) + hex_to_nibble(s[1]);
+    }
+}
+
 // event_queue is a list element that keeps track of pending
 // things to write to a track, including note-ons, note-offs,
 // updates, tempo changes, and time signatures
@@ -244,22 +254,6 @@ int Alg_smf_write::to_track(int channel)
         return 0;
     }
     return channel / channels_per_track;
-}
-
-
-static char hex_to_nibble(char c)
-{
-    if (isalpha(c)) {
-        return 10 + (toupper(c) - 'A');
-    } else {
-        return c - '0';
-    }
-}
-
-
-static char hex_to_char(const char *s)
-{
-    return (hex_to_nibble(s[0]) << 4) + hex_to_nibble(s[1]);
 }
 
 

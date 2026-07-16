@@ -374,14 +374,13 @@ void Alg_midifile_reader::Mf_seqnum(int /*n*/)
 }
 
 
-static const char *fpsstr[4] = {"24", "25", "29.97", "30"};
-
 void Alg_midifile_reader::Mf_smpte(int hours, int mins, int secs,
                                    int frames, int subframes)
 {
+    static const char *fpsstr[4] = { "24", "25", "29.97", "30" };
     // string will look like "24fps:01h:27m:07s:19.00f"
     // 30fps (drop frame) is notated as "29.97fps"
-    char text[32];
+    char text[sizeof "29.97fps:01h:27m:07s:19.00f"];
     int fps = (hours >> 6) & 3;
     hours &= 0x1F;
 #ifdef _MSC_VER
