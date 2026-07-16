@@ -170,7 +170,7 @@ bool Alg_reader::parse()
                 // skip over spaces, a sequence or track name cannot begin
                 // with leading blanks. Another decision is that the name
                 // must be at time zero
-                if (field.length() > 0) {
+                if (!field.empty()) {
                     // insert the field as sequence name or track name
                     auto *update = new Alg_update;
                     update->chan = -1;
