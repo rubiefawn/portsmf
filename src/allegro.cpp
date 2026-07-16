@@ -7,10 +7,12 @@
 #include <algorithm>
 #include <cassert>
 #include <cmath>
+#include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <cinttypes>
 #include <fstream>
+#include <iostream>
 #include <stdexcept>
 #include "allegro.h"
 #include "algrd_internal.h"

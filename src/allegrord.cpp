@@ -1,10 +1,14 @@
 //! \file
 
-#include <cassert>
-#include <cmath>
-#include <cstring>
-#include <string>
 #include <algorithm>
+#include <cassert>
+#include <cctype>
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <istream>
+#include <string>
 #include "strparse.h"
 #include "allegro.h"
 #include "algrd_internal.h"

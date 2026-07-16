@@ -1,9 +1,13 @@
 //! \file allegrosmfwr.cpp Allegro Standard Midi File Write
 
 #include <algorithm>
+#include <cctype>
 #include <cmath>
+#include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <fstream>
+#include <iostream>
 #include "allegro.h"
 
 // event_queue is a list element that keeps track of pending

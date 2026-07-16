@@ -2,7 +2,10 @@
 //! midifile reader
 
 #include <cassert>
+#include <cstdio>
+#include <cstdlib>
 #include <cstring>
+#include <istream>
 #include "allegro.h"
 #include "algsmfrd_internal.h"
 #include "mfmidi.h"
