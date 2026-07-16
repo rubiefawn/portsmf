@@ -78,7 +78,7 @@ Alg_event *Alg_seq::write_track_name(std::ostream &file, int n,
             }
         }
     }
-    file << std::endl; // end of line containing #track [<name>]
+    file << '\n'; // end of line containing #track [<name>]
     return e; // return parameter event with name if one was found
 }
 
@@ -91,7 +91,7 @@ void Alg_seq::write(std::ostream &file, bool in_secs, double offset)
     } else {
         convert_to_beats();
     }
-    file << "#offset " << offset << std::endl;
+    file << "#offset " << offset << '\n';
     Alg_event *update_to_skip = write_track_name(file, 0, track_list[0]);
     Alg_beats &beats = time_map->beats;
     for (i = 0; i < beats.len - 1; i++) {
