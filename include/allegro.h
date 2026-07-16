@@ -553,7 +553,10 @@ public:
     bool stretch_region(double b0, double b1, double dur);
     void cut(double start, double len, bool units_are_seconds);
     void trim(double start, double end, bool units_are_seconds);
+
+    //! \brief Insert a given time map at a given time and dur (in beats)
     void paste(double start, Alg_track *tr);
+
     //! insert a span of time. If start is at a tempo change, then
     //! the span of time runs at the changed tempo
     void insert_time(double start, double len);
@@ -933,7 +936,7 @@ public:
     void cut(double start, double end, double dur); //!< remove from start to end
     void trim(double start, double end); //!< retain just start to end
     void paste(double start, Alg_seq *seq);
-    void insert_beats(double beat, double len); //!< insert len beats at beat
+    void insert_beats(double start, double dur); //!< Insert \p dur beats at \p start
     //! find the nearest beat (see Alg_seq::nearest_beat) to beat
     double nearest_beat(double beat);
 };

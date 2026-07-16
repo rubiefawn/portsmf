@@ -42,7 +42,7 @@ public:
     double parse_pitch(string &field);
     long parse_after_key(int key, string &field, int n);
     long find_int_in(string &field, int n);
-    bool parse_attribute(string &field, Alg_parameter *parm);
+    bool parse_attribute(string &field, Alg_parameter *param);
     bool parse_val(Alg_parameter *param, string &s, int i);
     bool check_type(char type_char, Alg_parameter *param);
 };

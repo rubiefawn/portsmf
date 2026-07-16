@@ -627,16 +627,16 @@ void Alg_smf_write::write_delta(double event_time)
 }
 
 
-void Alg_smf_write::write_varinum(int value)
+void Alg_smf_write::write_varinum(int num)
 {
-    value = std::max(value, 0); // this line should not have to be here!
+    num = std::max(num, 0); // this line should not have to be here!
     int buffer;
 
-    buffer = value & 0x7f;
-    while ((value >>= 7) > 0) {
+    buffer = num & 0x7f;
+    while ((num >>= 7) > 0) {
         buffer <<= 8;
         buffer |= 0x80;
-        buffer += (value & 0x7f);
+        buffer += (num & 0x7f);
     }
 
     for (;;) {

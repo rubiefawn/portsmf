@@ -338,14 +338,14 @@ void Alg_event::set_integer_value(const char *a, int32_t value)
 }
 
 
-void Alg_event::set_atom_value(const char *a, const char *value)
+void Alg_event::set_atom_value(const char *attr, const char *atom)
 {
-    assert(a); // must be non-null
-    Alg_attribute attr = symbol_table.insert_string(a);
-    assert(attr[0] == 'a');
+    assert(attr); // must be non-null
+    Alg_attribute attr2 = symbol_table.insert_string(attr);
+    assert(attr2[0] == 'a');
     Alg_parameter parm;
-    parm.set_attr(attr);
-    parm.a = value;
+    parm.set_attr(attr2);
+    parm.a = atom;
     set_parameter(&parm);
     /* since type is 'a' we don't have to null the string */
 }
@@ -1194,21 +1194,20 @@ void Alg_time_map::cut(double start, double len, bool units_are_seconds)
 }
 
 
-void Alg_time_map::paste(double beat, Alg_track *tr)
+void Alg_time_map::paste(double start, Alg_track *tr)
 {
-    // insert a given time map at a given time and dur (in beats)
     Alg_time_map *from_map = tr->get_time_map();
     // printf("time map paste\nfrom map\n");
     // from_map->show();
     // printf("to map\n");
     // show();
     Alg_beats &from = from_map->beats;
-    double time = beat_to_time(beat);
+    double time = beat_to_time(start);
     // Locate the point at which dur occurs
     double dur = tr->get_beat_dur();
     double tr_end_time = from_map->beat_to_time(dur);
     // add offset to make room for insert
-    int i = locate_beat(beat);
+    int i = locate_beat(start);
     while (i < length()) {
         beats[i].beat += dur;
         beats[i].time += tr_end_time;
@@ -1217,7 +1216,7 @@ void Alg_time_map::paste(double beat, Alg_track *tr)
     // printf("after opening up\n");
     // show();
     // insert point at beginning and end of paste
-    insert_beat(time, beat);
+    insert_beat(time, start);
     // printf("after beginning point insert\n");
     // show();
     // insert_beat(time + tr_end_time, beat + dur);
@@ -1226,7 +1225,7 @@ void Alg_time_map::paste(double beat, Alg_track *tr)
     int j = from_map->locate_beat(dur);
     for (i = 0; i < j; i++) {
         insert_beat(from[i].time + time,  // shift by time
-                    from[i].beat + beat); // and beat
+                    from[i].beat + start); // and beat
     }
     // printf("after inserts\n");
     show();
