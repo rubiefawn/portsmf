@@ -40,7 +40,7 @@ public:
     bool parse();
     long parse_chan(string &field);
     long parse_int(string &field);
-    int find_real_in(string &field, int n);
+    static int find_real_in(string &field, int n);
     double parse_real(string &field);
     void parse_error(string &field, long offset, const char *message);
     double parse_dur(string &field, double base);
@@ -49,10 +49,10 @@ public:
     long parse_key(string &field);
     double parse_pitch(string &field);
     long parse_after_key(int key, string &field, int n);
-    long find_int_in(string &field, int n);
+    static long find_int_in(string &field, int n);
     bool parse_attribute(string &field, Alg_parameter *param);
     bool parse_val(Alg_parameter *param, string &s, int i);
-    bool check_type(char type_char, Alg_parameter *param);
+    static bool check_type(char type_char, Alg_parameter *param);
 };
 
 

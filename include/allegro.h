@@ -457,7 +457,7 @@ public:
     //! track owner in the Alg_event_list.)
     virtual void set_start_time(Alg_event *event, double t);
     //! get text description of run-time errors detected, clear error
-    const char *get_last_error_message() { return last_error_message; }
+    static const char *get_last_error_message() { return last_error_message; }
     //! \class Alg_event_list
     //! Implementation hint: keep a sequence number on each Alg_track that is
     //! incremented anytime there is a structural change. (This behavior is
@@ -685,10 +685,10 @@ protected:
     float get_float(char **p, long *b);
     static Serial_read_buffer ser_read_buf;
     static Serial_write_buffer ser_write_buf;
-    void serialize_parameter(Alg_parameter *parm);
+    static void serialize_parameter(Alg_parameter *parm);
     //! *buffer_ptr points to binary data, bytes_ptr points to how many
     //! bytes have been used so far, len is length of binary data
-    void unserialize_parameter(Alg_parameter *parm_ptr);
+    static void unserialize_parameter(Alg_parameter *parm_ptr);
 public:
     void serialize_track();
     void unserialize_track();
@@ -696,10 +696,12 @@ public:
         set_time_map(nullptr);
         type = 't';
     }
-    //! initialize empty track with a time map
-    Alg_track(Alg_time_map *map, bool seconds);
+    Alg_track(Alg_time_map *map, bool seconds); //!< Initialize empty track with a time map
 
-    Alg_event *copy_event(Alg_event *event); //!< make a complete copy
+    //! \brief Make a complete copy of an \ref Alg_event
+    //! \todo Should this be deprecated in favor of a copy constructor
+    //! under Alg_event instead?
+    static Alg_event *copy_event(Alg_event *event);
 
     Alg_track(Alg_track &track);  //!< copy constructor, does not copy time_map
     //! copy constructor: event_list is copied, map is installed and referenced
@@ -749,11 +751,11 @@ public:
     //! Methods to create events. The returned event is owned by the caller.
     //! Use delete to get rid of it unless you call add() -- see below.
     //!
-    Alg_note *create_note(double time, int channel, int identifier,
+    static Alg_note *create_note(double time, int channel, int identifier,
                            float pitch, float loudness, double duration);
     //! Note: after create_update(), caller should use set_*_value() to
     //! initialize the attribute/value pair:
-    Alg_update *create_update(double time, int channel, int identifier);
+    static Alg_update *create_update(double time, int channel, int identifier);
     //! Adds a new event - it is automatically inserted into the
     //! correct order in the sequence based on its timestamp.
     //! The ownership passes from the caller to this Alg_seq. The
@@ -1033,9 +1035,8 @@ protected:
     Alg_iterator *pending; //!< iterator used internally by Alg_seq methods
     void serialize_seq();
     Alg_error error; //!< error code set by file readers
-    //! an internal function used for writing Allegro track names
-    Alg_event *write_track_name(std::ostream &file, int n,
-                                   Alg_events &events);
+    //! \brief Internal function used for writing Allegro track names
+    static Alg_event *write_track_name(std::ostream &file, int n, Alg_events &events);
 public:
     int channel_offset_per_track; //!< used to encode track_num into channel
     Alg_tracks track_list;       //!< array of Alg_events

@@ -92,8 +92,8 @@ private:
     //!
     //! If \p skip == 1, attempt to skip initial garbage.
     int readmt(const char *s, int skip);
-    long to32bit(int c1, int c2, int c3, int c4);
-    int to16bit(int c1, int c2);
+    static long to32bit(int c1, int c2, int c3, int c4);
+    static int to16bit(int c1, int c2);
     void mferror(const char *s);
     void badbyte(int c);
     void metaevent(int type);
