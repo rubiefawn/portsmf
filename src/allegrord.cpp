@@ -1,6 +1,7 @@
 //! \file
 
 #include <cassert>
+#include <cmath>
 #include <cstring>
 #include <string>
 #include <algorithm>
@@ -142,7 +143,7 @@ Alg_parameters *Alg_reader::process_attributes(
 bool Alg_reader::parse()
 {
     int voice = 0;
-    int key = 60;
+    long key = 60;
     double loud = 100.0;
     double pitch = 60.0;
     double dur = 1.0;
@@ -162,7 +163,7 @@ bool Alg_reader::parse()
         bool new_pitch_flag = false; // "P" syntax or "A"-"G" syntax
         double new_pitch = 0.0;
         bool new_key_flag = false;   // "K" syntax
-        int new_key = 0;
+        long new_key = 0;
         Alg_parameters *attributes = nullptr;
         if (line_parser.peek() == '#') {
             // look for #track
@@ -342,7 +343,7 @@ bool Alg_reader::parse()
                 key = new_key;
             } else if (new_pitch_flag) {
                 // pitch was specified, but key was not; get key from pitch
-                key = static_cast<int>(new_pitch + 0.5); // round to integer key number
+                key = std::lround(new_pitch); // round to integer key number
             }
             if (new_pitch_flag) {
                 pitch = new_pitch;
@@ -371,7 +372,7 @@ bool Alg_reader::parse()
                         seq->set_real_dur(time + dur);
                     }
                 } else {
-                    int update_key = -1;
+                    long update_key = -1;
                     // key must appear explicitly; otherwise
                     //    update applies to channel
                     if (new_key_flag) {

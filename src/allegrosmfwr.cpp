@@ -149,7 +149,7 @@ void Alg_smf_write::write_note(Alg_note *note, bool on)
     //printf("deltaDivisions: %d, beats elapsed: %g, on? %c\n", deltaDivisions, note->time, on);
 
     char chan = static_cast<char>(note->chan & 15);
-    int pitch = static_cast<int>(note->pitch + 0.5);
+    auto pitch = std::lround(note->pitch);
     if (pitch < 0) {
           pitch = pitch % 12;
     } else if (pitch > 127) {
