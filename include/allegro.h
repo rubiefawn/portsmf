@@ -65,7 +65,7 @@ char *heapify(const char *s); //!< Put a string on the heap
 //! example, the attribute 'tempor' (a real number representing tempo)
 //! is stored as 'rtempor'. To get the string name, just use attribute+1
 //! (see \ref alg_attr_name).
-typedef const char *Alg_attribute;
+using Alg_attribute = const char*;
 #define alg_attr_name(a) ((a) + 1)
 #define alg_attr_type(a) (*(a))
 
@@ -967,9 +967,10 @@ public:
 };
 
 
-typedef enum {
-    alg_no_error = 0,      //!< no error reading Allegro or MIDI file
-    alg_error_open = -800, //!< could not open Allegro or MIDI file
+enum Alg_error {
+    alg_no_error = 0,      //!< No error reading Allegro or MIDI file
+    alg_error_open = -800, //!< Could not open Allegro or MIDI file
+    //! \brief Syntax error in Allegro or MIDI file
     //! Something found in the file that could not be parsed;
     //! generally you should ignore syntax errors or look at the printed
     //! error messages because there are some things in standard midi
@@ -978,7 +979,7 @@ typedef enum {
     //! real problem with the file as opposed to when there is some
     //! warning message for the user
     alg_error_syntax
-} Alg_error;
+};
 
 
 struct Alg_pending_event {
