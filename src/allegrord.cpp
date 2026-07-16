@@ -511,12 +511,9 @@ void Alg_reader::parse_error(string &field, long offset, const char *message)
 }
 
 
-double duration_lookup[] = {0.25, 0.5, 1.0, 2.0, 4.0};
-
-
 double Alg_reader::parse_dur(string &field, double base)
 {
-    const char *msg = "Duration expected";
+    static const double duration_lookup[] = { 0.25, 0.5, 1.0, 2.0, 4.0 };
     const char *durs = "SIQHW";
     const char *p;
     int last;
@@ -535,7 +532,7 @@ double Alg_reader::parse_dur(string &field, double base)
         dur = duration_lookup[p - durs];
         last = 2;
     } else {
-        parse_error(field, 1, msg);
+        parse_error(field, 1, "Duration expected");
         return 0;
     }
     dur = parse_after_dur(dur, field, last, base);
@@ -573,17 +570,15 @@ double Alg_reader::parse_after_dur(double dur, string &field,
     return dur;
 }
 
-struct loud_lookup_struct {
-    const char *str;
-    int val;
-} loud_lookup[] = { {"FFF", 127}, {"FF", 120}, {"F", 110}, {"MF", 100},
-                    {"MP", 90}, {"P", 80}, {"PP", 70}, {"PPP", 60},
-                    {nullptr, 0} };
-
 
 double Alg_reader::parse_loud(string &field)
 {
-    const char *msg = "Loudness expected";
+    static const struct { const char *str; int val; } loud_lookup[] = {
+        { "FFF", 127 }, { "FF", 120 }, { "F" , 110 }, { "MF" , 100 },
+        { "MP" ,  90 }, { "P" ,  80 }, { "PP",  70 }, { "PPP",  60 },
+        { nullptr, 0 }
+    };
+
     if (isdigit(field[1])) {
         return parse_int(field);
     } else {
@@ -595,12 +590,10 @@ double Alg_reader::parse_loud(string &field)
             }
         }
     }
-    parse_error(field, 1, msg);
+
+    parse_error(field, 1, "Loudness expected");
     return 100.0;
 }
-
-
-int key_lookup[] = {21, 23, 12, 14, 16, 17, 19};
 
 
 // the field can be K<number> or K[A-G]<number> or P[A-G]<number>
@@ -609,9 +602,10 @@ int key_lookup[] = {21, 23, 12, 14, 16, 17, 19};
 //
 long Alg_reader::parse_key(string &field)
 {
-    const char *msg = "Pitch expected";
+    static const int key_lookup[] = { 21, 23, 12, 14, 16, 17, 19 };
     const char *pitches = "ABCDEFG";
     const char *p;
+
     if (isdigit(field[1])) {
         // This routine would not have been called if field = "P<number>"
         // so it must be "K<number>" so <number> must be an integer.
@@ -621,7 +615,8 @@ long Alg_reader::parse_key(string &field)
         key = parse_after_key(key, field, 2);
         return key;
     }
-    parse_error(field, 1, msg);
+
+    parse_error(field, 1, "Pitch expected");
     return 0;
 }
 
@@ -754,9 +749,6 @@ bool Alg_reader::check_type(char type_char, Alg_parameter *param)
     return param->attr_type() == type_char;
 }
 
-
-//duration_lookup = {"S": 0.5, "I": 0.5, "Q": 1, "H": 2, "W": 4}
-//key_lookup = {"C": 12, "D": 14, "E": 16, "F": 17, "G": 19, "A": 21, "B": 23}
 
 /*
 def test():

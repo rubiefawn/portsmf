@@ -19,6 +19,7 @@
 #define TIMFMT std::fixed << std::setprecision(TIMPREC)
 #define GFMT std::resetiosflags(std::ios::floatfield) << std::setprecision(6)
 
+namespace {
 void parameter_print(std::ostream &file, Alg_parameter *p)
 {
     file << " -" << p->attr_name() << ":";
@@ -47,6 +48,7 @@ void parameter_print(std::ostream &file, Alg_parameter *p)
     }
     default: assert(false); // TODO C++23: std::unreachable()
     } /* switch (p->attr_type()) */
+}
 }
 
 Alg_event *Alg_seq::write_track_name(std::ostream &file, int n,

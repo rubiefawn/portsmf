@@ -442,19 +442,17 @@ void Alg_midifile_reader::Mf_sqspecific(int len, unsigned char *msg)
 }
 
 
-char *heapify2(int len, unsigned char *s)
-{
-    char *h = new char[len + 1];
-    memcpy(h, s, len);
-    h[len] = 0;
-    return h;
-}
-
 
 void Alg_midifile_reader::Mf_text(int type, int len, unsigned char *msg)
 {
     Alg_parameter text;
-    text.s = heapify2(len, msg);
+
+    {
+        auto *msgdup = new char[len + 1]{};
+        memcpy(msgdup, msg, len);
+        text.s = msgdup;
+    }
+
     const char *attr = "miscs";
     if (type == 1) {
         attr = "texts";

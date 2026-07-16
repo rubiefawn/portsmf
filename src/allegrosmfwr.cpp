@@ -116,6 +116,8 @@ private:
 // are going to go in with times that are 1/4 tick earlier so they
 // get scheduled first, but still end up on the same tick.
 //
+// TODO: Should this be a (static) method of event_queue rather than a
+// standalone function?
 event_queue* push(event_queue *queue, event_queue *event)
 {
     // printf("push: %.6g, %c, %d\n", event->time, event->type, event->index);
@@ -140,6 +142,10 @@ event_queue* push(event_queue *queue, event_queue *event)
 }
 
 
+// TODO: Should this be a method of event_queue rather than a standalone
+// function?
+// FIXME: This is unused and is not exposed in any headers. Should this
+// be removed?
 void print_queue(event_queue *q)
 {
     printf("Printing queue. . .\n");
