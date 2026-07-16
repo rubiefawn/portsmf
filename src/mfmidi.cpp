@@ -301,7 +301,6 @@ void Midifile_reader::readtrack()
         } /* switch (c) */
     } /*  while (Mf_toberead > 0) */
     Mf_endtrack();
-    return;
 }
 
 void Midifile_reader::badbyte(int c)
