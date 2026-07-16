@@ -45,6 +45,7 @@ void parameter_print(std::ostream &file, Alg_parameter *p)
         file << str;
         break;
     }
+    default: assert(false); // TODO C++23: std::unreachable()
     } /* switch (p->attr_type()) */
 }
 

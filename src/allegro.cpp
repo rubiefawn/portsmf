@@ -129,6 +129,7 @@ void Alg_parameter::show()
     case 'a': {
         printf("%s:%s", attr_name(), a);
         break;
+    default: assert(false); // TODO C++23: std::unreachable()
     }
     } /* switch (attr[0]) */
 }
@@ -1552,6 +1553,7 @@ void Alg_track::serialize_parameter(Alg_parameter *parm)
         ser_write_buf.set_string(parm->a);
         break;
     }
+    default: assert(false); // TODO C++23: std::unreachable()
     } /* switch (parm->attr_type()) */
 }
 
@@ -1727,6 +1729,7 @@ void Alg_track::unserialize_parameter(Alg_parameter *parm_ptr)
         parm_ptr->a = symbol_table.insert_attribute(ser_read_buf.get_string());
         break;
     }
+    default: assert(false); // TODO C++23: std::unreachable()
     } /* switch (parm_ptr->attr_type()) */
 }
 

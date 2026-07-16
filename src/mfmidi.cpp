@@ -425,6 +425,7 @@ void Midifile_reader::chanmessage(int status, int c1, int c2)
         Mf_chanpressure(chan, c1);
         break;
     }
+    default: break; // Alg_midi_msg_type is non-exhaustive
     } /* switch (status & 0xf0) */
 }
 
