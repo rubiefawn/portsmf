@@ -141,22 +141,6 @@ event_queue* push(event_queue *queue, event_queue *event)
 }
 
 
-// TODO: Should this be a method of event_queue rather than a standalone
-// function?
-// FIXME: This is unused and is not exposed in any headers. Should this
-// be removed?
-void print_queue(event_queue *q)
-{
-    printf("Printing queue. . .\n");
-    event_queue *q2=q;
-    while (q2) {
-        printf("%c at %f ;", q2->type, q2->time);
-        q2 = q2->next;
-    }
-    printf("\nDone printing.\n");
-}
-
-
 void Alg_smf_write::write_note(Alg_note *note, bool on)
 {
     double event_time = (on ? note->time : note->time + note->dur);

@@ -724,8 +724,15 @@ public:
     //! whether it's MIDI or text.
     static Alg_track *unserialize(void *buffer, long len);
 
-    //! If the track is really an Alg_seq and you need to access an
-    //! Alg_seq method, coerce to an Alg_seq with this function:
+    //! @brief Attempt to downcast to an @ref Alg_seq
+    //!
+    //! If the track is really an @ref Alg_seq and you need to access an
+    //! @ref Alg_seq method, coerce to a @ref Alg_seq with this function
+    //!
+    //! @returns `Alg_seq*` if this @ref Alg_track was an @ref Alg_seq,
+    //! otherwise returns `nullptr`
+    //! @deprecated Use `dynamic_cast<Alg_seq*>()` instead
+    [[deprecated("Use dynamic_cast<Alg_seq*>() instead")]]
     Alg_seq *to_alg_seq();
 
     //! Are we using beats or seconds?

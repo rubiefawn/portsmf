@@ -1575,13 +1575,9 @@ Alg_track *Alg_track::unserialize(void *buffer, long len)
 }
 
 
-
 Alg_seq *Alg_track::to_alg_seq() {
-    // TODO: This whole function can be replaced with
-    // dynamic_cast<Alg_seq*>(). It should probably be deprecated
     return get_type() == 's' ? static_cast<Alg_seq*>(this) : nullptr;
 }
-
 
 
 #ifdef _MSC_VER
