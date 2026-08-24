@@ -1,5 +1,33 @@
 name: build
-on: [push, pull_request]
+on:
+  workflow_dispatch:
+    inputs:
+      buildType: # https://cmake.org/cmake/help/latest/variable/CMAKE_CONFIGURATION_TYPES.html
+        description: 'CMake build type'
+        type: choice
+        options:
+          - Debug
+          - RelWithDebugInfo
+          - Release
+          - MinSizeRel
+        required: true
+        default: RelWithDebugInfo
+      buildSharedLibs: # https://cmake.org/cmake/help/latest/variable/BUILD_SHARED_LIBS.html
+        description: 'Build dynamic library'
+        type: boolean
+        default: true
+      buildExamples:
+        description: 'Build example applications'
+        type: boolean
+        default: false
+      buildTesting: # https://cmake.org/cmake/help/latest/variable/BUILD_TESTING.html
+        description: 'Run tests'
+        type: boolean
+        default: true
+      cmakeArgs:
+        description: 'Additional CMake arguments'
+  push:
+  pull_request:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -12,27 +40,33 @@ jobs:
           - name: linux-x86
             os: ubuntu-24.04
             install_dir: ~/portSMF
-            cmake_extras: -DCMAKE_BUILD_TYPE=RelWithDebInfo
+            cmake_extras: -DCMAKE_BUILD_TYPE=${{ github.event.inputs.buildType }}
+            ctest_target: test
           - name: linux-arm
             os: ubuntu-24.04-arm
             install_dir: ~/portSMF
-            cmake_extras: -DCMAKE_BUILD_TYPE=RelWithDebInfo
+            cmake_extras: -DCMAKE_BUILD_TYPE=${{ github.event.inputs.buildType }}
+            ctest_target: test
           - name: macos-x86
             os: macos-15-intel
             install_dir: ~/portSMF
-            cmake_extras: -DCMAKE_BUILD_TYPE=RelWithDebInfo
+            cmake_extras: -DCMAKE_BUILD_TYPE=${{ github.event.inputs.buildType }}
+            ctest_target: test
           - name: macos-arm
             os: macos-15
             install_dir: ~/portSMF
-            cmake_extras: -DCMAKE_BUILD_TYPE=RelWithDebInfo
+            cmake_extras: -DCMAKE_BUILD_TYPE=${{ github.event.inputs.buildType }}
+            ctest_target: test
           - name: windows-x86
             os: windows-2025
             install_dir: C:\portSMF
-            cmake_config: --config RelWithDebInfo
+            cmake_config: --config ${{ github.event.inputs.buildType }}
+            ctest_target: RUN_TESTS
           - name: windows-arm
             os: windows-11-arm
             install_dir: C:\portSMF
-            cmake_config: --config RelWithDebInfo
+            cmake_config: --config ${{ github.event.inputs.buildType }}
+            ctest_target: RUN_TESTS
 
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
@@ -40,14 +74,15 @@ jobs:
     - name: Check out Git repository
       uses: actions/checkout@v5
     - name: Configure
-      run: cmake -DCMAKE_INSTALL_PREFIX=${{ matrix.install_dir }} ${{ matrix.cmake_extras }} -S . -B build
+      run: cmake -DCMAKE_INSTALL_PREFIX=${{ matrix.install_dir }} ${{ matrix.cmake_extras }} ${{ github.event.inputs.cmakeArgs }} -DBUILD_TESTING=${{ github.event.input.buildTesting }} -DBUILD_SHARED_LIBS=${{ github.event.inputs.buildSharedLibs }} -DBUILD_APPS=${{ github.event.inputs.buildExamples }} -S . -B build
     - name: Build
       run: cmake --build build ${{ matrix.cmake_config }}
       env:
         CMAKE_BUILD_PARALLEL_LEVEL: 2
+        CTEST_OUTPUT_ON_FAILURE: 1
     - name: Test
-      if: ${{ runner.os != 'Windows' }}
-      run: cd build && ctest --build-config RelWithDebInfo --output-on-failure && cd ..
+      if: ${{ github.event.input.buildTesting }}
+      run: cmake --build build --target ${{ matrix.ctest_target }} ${{ matrix.cmake_config }}
     - name: Install
       run: cmake --install . ${{ matrix.cmake_config }}
       working-directory: build
