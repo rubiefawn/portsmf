@@ -151,7 +151,7 @@ void Alg_smf_write::write_note(Alg_note *note, bool on)
     char chan = static_cast<char>(note->chan & 15);
     auto pitch = std::lround(note->pitch);
     if (pitch < 0) {
-          pitch = pitch % 12;
+        pitch = pitch % 12;
     } else if (pitch > 127) {
         pitch = (pitch % 12) + 120; // put pitch in 10th octave
         if (pitch > 127) {
@@ -161,11 +161,7 @@ void Alg_smf_write::write_note(Alg_note *note, bool on)
     out_file.put(0x90 + chan);
     out_file.put(pitch);
     if (on) {
-        int vel = static_cast<int>(note->loud);
-        if (vel <= 0) {
-            vel = 1;
-        }
-        write_data(vel);
+        write_data(std::min(1, static_cast<int>(note->loud)));
     } else {
         out_file.put(0); // note-off indicated by velocty zero
     }
@@ -216,13 +212,7 @@ void Alg_smf_write::write_smpteoffset(Alg_update *update, char *s)
 // write_data - limit data to the range of [0...127] and write it
 void Alg_smf_write::write_data(int data)
 {
-    if (data < 0) {
-        data = 0;
-    } else if (data > 0x7F) {
-        data = 0x7F;
-    }
-
-    out_file.put(data);
+    out_file.put(static_cast<char>(std::clamp(0, data, 0x7f)));
 }
 
 
