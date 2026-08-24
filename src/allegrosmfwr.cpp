@@ -38,7 +38,7 @@ public:
 
 class Alg_smf_write {
 public:
-    Alg_smf_write(Alg_seq *s) : seq{s} {};
+    Alg_smf_write(Alg_seq *s, std::ostream &file) : out_file{file}, seq{s} {};
     ~Alg_smf_write() = default;
 
     //! \brief Used to encode track number into chan field
@@ -47,7 +47,7 @@ public:
     //! Default is 100, set this to 0 to merge all tracks to 16 channels
     long channels_per_track = 100;
 
-    void write(std::ostream &file /* , midiFileFormat = 1 */);
+    void write(/* midiFileFormat = 1 */);
 
 private:
     //! \brief Time in ticks of most recently written event
@@ -69,7 +69,7 @@ private:
     int to_midi_channel(int channel);
     int to_track(int channel);
 
-    std::ostream *out_file = nullptr;
+    std::ostream &out_file;
 
     Alg_seq *seq;
 
@@ -158,8 +158,8 @@ void Alg_smf_write::write_note(Alg_note *note, bool on)
             pitch -= 12; // or 9th octave
         }
     }
-    out_file->put(0x90 + chan);
-    out_file->put(pitch);
+    out_file.put(0x90 + chan);
+    out_file.put(pitch);
     if (on) {
         int vel = static_cast<int>(note->loud);
         if (vel <= 0) {
@@ -167,7 +167,7 @@ void Alg_smf_write::write_note(Alg_note *note, bool on)
         }
         write_data(vel);
     } else {
-        out_file->put(0); // note-off indicated by velocty zero
+        out_file.put(0); // note-off indicated by velocty zero
     }
 }
 
@@ -176,10 +176,10 @@ void Alg_smf_write::write_midi_channel_prefix(Alg_update *update)
 {
     if (update->chan >= 0) { // write MIDI Channel Prefix
         write_delta(update->time);
-        out_file->put('\xFF'); // Meta Event
-        out_file->put('\x20'); // Type code for MIDI Channel Prefix
-        out_file->put(1); // length
-        out_file->put(to_midi_channel(update->chan));
+        out_file.put('\xFF'); // Meta Event
+        out_file.put('\x20'); // Type code for MIDI Channel Prefix
+        out_file.put(1); // length
+        out_file.put(to_midi_channel(update->chan));
         // one thing odd about the Std MIDI File spec is that once
         // you turn on MIDI Channel Prefix, there seems to be no
         // way to cancel it unless a non-Meta event shows up. We
@@ -193,10 +193,10 @@ void Alg_smf_write::write_text(Alg_update *update, char type)
 {
     write_midi_channel_prefix(update);
     write_delta(update->time);
-    out_file->put('\xFF');
-    out_file->put(type);
-    out_file->put(static_cast<char>(strlen(update->parameter.s)));
-    *out_file << update->parameter.s;
+    out_file.put('\xFF');
+    out_file.put(type);
+    out_file.put(static_cast<char>(strlen(update->parameter.s)));
+    out_file << update->parameter.s;
 }
 
 
@@ -204,11 +204,11 @@ void Alg_smf_write::write_smpteoffset(Alg_update *update, char *s)
 {
     write_midi_channel_prefix(update);
     write_delta(update->time);
-    out_file->put('\xFF'); // meta event
-    out_file->put('\x54'); // smpte offset type code
-    out_file->put(5); // length
+    out_file.put('\xFF'); // meta event
+    out_file.put('\x54'); // smpte offset type code
+    out_file.put(5); // length
     for (int i = 0; i < 5; i++) {
-        *out_file << s[i];
+        out_file << s[i];
     }
 }
 
@@ -222,7 +222,7 @@ void Alg_smf_write::write_data(int data)
         data = 0x7F;
     }
 
-    out_file->put(data);
+    out_file.put(data);
 }
 
 
@@ -249,10 +249,10 @@ int Alg_smf_write::to_track(int channel)
 void Alg_smf_write::write_binary(int type_byte, const char *msg)
 {
     int len = strlen(msg) / 2;
-    out_file->put(type_byte);
+    out_file.put(type_byte);
     write_varinum(len);
     for (int i = 0; i < len; i++) {
-        out_file->put(hex_to_char(msg));
+        out_file.put(hex_to_char(msg));
         msg += 2;
     }
 }
@@ -266,16 +266,16 @@ void Alg_smf_write::write_update(Alg_update *update)
     if (!strcmp(name, "pressurer")) {
         write_delta(update->time);
         if (update->get_identifier() < 0) { // channel pressure message
-            out_file->put(0xD0 + to_midi_channel(update->chan));
+            out_file.put(0xD0 + to_midi_channel(update->chan));
             write_data(static_cast<int>(update->parameter.r * 127));
         } else { // just 1 key -- poly pressure
-            out_file->put(0xA0 + to_midi_channel(update->chan));
+            out_file.put(0xA0 + to_midi_channel(update->chan));
             write_data(update->get_identifier());
             write_data(static_cast<int>(update->parameter.r * 127));
         }
     } else if (!strcmp(name, "programi")) {
         write_delta(update->time);
-        out_file->put(0xC0 + to_midi_channel(update->chan));
+        out_file.put(0xC0 + to_midi_channel(update->chan));
         write_data(update->parameter.i);
     } else if (!strcmp(name, "bendr")) {
         int temp = std::lround(0x2000 * (update->parameter.r + 1));
@@ -283,7 +283,7 @@ void Alg_smf_write::write_update(Alg_update *update)
         int c1 = temp & 0x7F; // low 7 bits
         int c2 = temp >> 7;   // high 7 bits
         write_delta(update->time);
-        out_file->put(0xE0 + to_midi_channel(update->chan));
+        out_file.put(0xE0 + to_midi_channel(update->chan));
         write_data(c1);
         write_data(c2);
     } else if (!strncmp(name, "control", 7) &&
@@ -291,7 +291,7 @@ void Alg_smf_write::write_update(Alg_update *update)
         int ctrlnum = atoi(name + 7);
         int val = std::lround(update->parameter.r * 127);
         write_delta(update->time);
-        out_file->put(0xB0 + to_midi_channel(update->chan));
+        out_file.put(0xB0 + to_midi_channel(update->chan));
         write_data(ctrlnum);
         write_data(val);
     } else if (!strcmp(name, "sysexs") &&
@@ -306,7 +306,7 @@ void Alg_smf_write::write_update(Alg_update *update)
                update->parameter.attr_type() == 's') {
         const char *s = update->parameter.s;
         write_delta(update->time);
-        out_file->put('\xFF');
+        out_file.put('\xFF');
         write_binary(0x7F, s);
 
     /****Text Events****/
@@ -392,13 +392,13 @@ void Alg_smf_write::write_update(Alg_update *update)
     }
     if (keysig != -99 && keysig_mode) { // write when both are defined
         write_delta(keysig_when);
-        out_file->put('\xFF');
-        out_file->put('\x59');
-        out_file->put(2);
+        out_file.put('\xFF');
+        out_file.put('\x59');
+        out_file.put(2);
         // mask off high bits so that this value appears to be positive
         // i.e. -1 -> 0xFF (otherwise, write_data will clip -1 to 0)
-        out_file->put(keysig & 0xFF);
-        out_file->put(keysig_mode == 'm');
+        out_file.put(keysig & 0xFF);
+        out_file.put(keysig_mode == 'm');
         keysig = -99;
         keysig_mode = false;
     }
@@ -484,9 +484,9 @@ void Alg_smf_write::write_tempo(int divs, int tempo)
     //    printf("Inserting tempo %f after %f clocks.\n", tempo, delta);
     write_varinum(divs - previous_divs);
     previous_divs = divs;
-    out_file->put('\xFF');
-    out_file->put('\x51');
-    out_file->put('\x03');
+    out_file.put('\xFF');
+    out_file.put('\x51');
+    out_file.put('\x03');
     write_24bit(tempo);
 }
 
@@ -516,33 +516,31 @@ void Alg_smf_write::write_time_signature(int i)
     Alg_time_sigs &ts = seq->time_sig;
     write_delta(ts[i].beat);
     // write the time signature
-    out_file->put('\xFF');
-    out_file->put('\x58');  // time signature
-    out_file->put('\x04');     // length of message
-    out_file->put(std::lround(ts[i].num));
+    out_file.put('\xFF');
+    out_file.put('\x58');  // time signature
+    out_file.put('\x04');     // length of message
+    out_file.put(std::lround(ts[i].num));
     int den = std::lround(ts[i].den);
     int den_byte = 0;
     while (den > 1) { // compute the log2 of denominator
         den_byte++;
         den >>= 1;
     }
-    out_file->put(den_byte);
-    out_file->put(24); // clocks per quarter
-    out_file->put(8);  // 32nd notes per 24 clocks
+    out_file.put(den_byte);
+    out_file.put(24); // clocks per quarter
+    out_file.put(8);  // 32nd notes per 24 clocks
 }
 
 
 
-void Alg_smf_write::write(std::ostream &file)
+void Alg_smf_write::write()
 {
     int track_len_offset;
     int track_end_offset;
     int track_len;
 
-    out_file = &file;
-
     // Header
-    file << "MThd";
+    out_file << "MThd";
 
     write_32bit(6); // chunk length
 
@@ -557,47 +555,47 @@ void Alg_smf_write::write(std::ostream &file)
     int i;
     for (i = 0; i < seq->tracks(); i++) {
         previous_divs = 0;
-        *out_file << "MTrk";
-        track_len_offset = out_file->tellp();
+        out_file << "MTrk";
+        track_len_offset = out_file.tellp();
         write_32bit(0); // track len placeholder
 
         write_track(i);
 
         // End of track event
         write_varinum(0);           // delta time
-        out_file->put('\xFF');
-        out_file->put('\x2F');
-        out_file->put('\x00');
+        out_file.put('\xFF');
+        out_file.put('\x2F');
+        out_file.put('\x00');
 
         // Go back and write in the length of the track
-        track_end_offset = out_file->tellp();
+        track_end_offset = out_file.tellp();
         track_len = track_end_offset - track_len_offset - 4;
-        out_file->seekp(track_len_offset);
+        out_file.seekp(track_len_offset);
         write_32bit(track_len);
-        out_file->seekp(track_end_offset);
+        out_file.seekp(track_end_offset);
     }
 }
 
 
 void Alg_smf_write::write_16bit(int num)
 {
-    out_file->put((num & 0xFF00) >> 8);
-    out_file->put(num & 0xFF);
+    out_file.put((num & 0xFF00) >> 8);
+    out_file.put(num & 0xFF);
 }
 
 void Alg_smf_write::write_24bit(int num)
 {
-    out_file->put((num & 0xFF0000) >> 16);
-    out_file->put((num & 0xFF00) >> 8);
-    out_file->put((num & 0xFF));
+    out_file.put((num & 0xFF0000) >> 16);
+    out_file.put((num & 0xFF00) >> 8);
+    out_file.put((num & 0xFF));
 }
 
 void Alg_smf_write::write_32bit(int num)
 {
-    out_file->put((num & 0xFF000000) >> 24);
-    out_file->put((num & 0xFF0000) >> 16);
-    out_file->put((num & 0xFF00) >> 8);
-    out_file->put((num & 0xFF));
+    out_file.put((num & 0xFF000000) >> 24);
+    out_file.put((num & 0xFF0000) >> 16);
+    out_file.put((num & 0xFF00) >> 8);
+    out_file.put((num & 0xFF));
 }
 
 
@@ -624,7 +622,7 @@ void Alg_smf_write::write_varinum(int num)
     }
 
     for (;;) {
-        out_file->put(buffer);
+        out_file.put(buffer);
         if (buffer & 0x80) {
             buffer >>= 8;
         } else {
@@ -636,9 +634,10 @@ void Alg_smf_write::write_varinum(int num)
 
 void Alg_seq::smf_write(std::ostream &file)
 {
-    Alg_smf_write writer(this);
-    writer.write(file);
+    Alg_smf_write writer(this, file);
+    writer.write();
 }
+
 
 bool Alg_seq::smf_write(const char *filename)
 {
